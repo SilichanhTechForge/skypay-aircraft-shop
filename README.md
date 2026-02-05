@@ -43,11 +43,10 @@ To make the project stand out, I added:
 - **Responsive Design**: The grid layout adjusts automatically if you resize the window.
 - **Local Images**: I manually curated 20+ images and mapped them to the specific aircraft models so every listing looks real.
 
+## Screen-shot
+<img width="1214" height="867" alt="image" src="https://github.com/user-attachments/assets/9c1a0960-8032-4f73-b706-c40e21811b59" />
 
-<img width="1470" height="956" alt="Screenshot 2026-02-05 at 12 44 44" src="https://github.com/user-attachments/assets/984b3b44-c5d1-4bdf-892c-e9906c4ef0d2" />
-<img width="1470" height="956" alt="Screenshot 2025-12-30 at 15 18 37" src="https://github.com/user-attachments/assets/9cdcd733-d789-4293-bbb3-902d8e101cea" />
-
-
+<img width="1206" height="916" alt="image" src="https://github.com/user-attachments/assets/46ceb207-66e7-4ff7-946d-e82c4e53ab7d" />
 
 
 ## How to Run
