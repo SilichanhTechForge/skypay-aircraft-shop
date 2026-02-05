@@ -53,7 +53,7 @@ To make the project stand out, I added:
 
 1.  Open the folder in a terminal.
 2.  Run `dotnet run`.
-3.  Go to `http://localhost:5016` (or https://skypay-aircraft-shop.onrender.com ).
+3.  Go to `http://localhost:5016` (or https://skypay-aircraft-shop-production.up.railway.app/?q=&brand= ).
 
 
 
