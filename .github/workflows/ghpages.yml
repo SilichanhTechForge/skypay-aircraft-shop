@@ -20,11 +20,8 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Build F# Project
-        run: dotnet build
-
-      - name: Publish F# Project
-        run: dotnet publish -c Release -o dist
+      - name: Build Static HTML Site
+        run: dotnet run -- --build-static
 
       - name: Deploy to GitHub Pages 🚀
         uses: JamesIves/github-pages-deploy-action@v4

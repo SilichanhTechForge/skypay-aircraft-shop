@@ -124,16 +124,48 @@ let webApp =
 
 [<EntryPoint>]
 let main args =
-    let builder = WebApplication.CreateBuilder(args)
-    builder.Services.AddGiraffe() |> ignore
+    if args |> Array.contains "--build-static" then
+        // Generate static HTML for GitHub Pages
+        printfn "Building static HTML for GitHub Pages..."
+        let allAircraft = aircraftDatabase
+        let topStats = topSellingAircraft
+        let view = dashboardView allAircraft topStats "" ""
+        
+        let htmlString = Giraffe.ViewEngine.RenderView.AsString.htmlDocument view
+        
+        if not (System.IO.Directory.Exists("dist")) then
+            System.IO.Directory.CreateDirectory("dist") |> ignore
+            
+        System.IO.File.WriteAllText("dist/index.html", htmlString)
+        
+        if System.IO.Directory.Exists("wwwroot") then
+            if not (System.IO.Directory.Exists("dist/wwwroot")) then
+                System.IO.Directory.CreateDirectory("dist/wwwroot") |> ignore
+            // Copy contents recursively
+            let rec copyDir src dst =
+                if not (System.IO.Directory.Exists(dst)) then
+                    System.IO.Directory.CreateDirectory(dst) |> ignore
+                for file in System.IO.Directory.GetFiles(src) do
+                    let fileName = System.IO.Path.GetFileName(file)
+                    System.IO.File.Copy(file, System.IO.Path.Combine(dst, fileName), true)
+                for dir in System.IO.Directory.GetDirectories(src) do
+                    let dirName = System.IO.Path.GetFileName(dir)
+                    copyDir dir (System.IO.Path.Combine(dst, dirName))
+            copyDir "wwwroot" "dist"
+            
+        printfn "Static site generated in dist/"
+        0
+    else
+        let builder = WebApplication.CreateBuilder(args)
+        builder.Services.AddGiraffe() |> ignore
 
-    let app = builder.Build()
+        let app = builder.Build()
 
-    if app.Environment.IsDevelopment() then
-        app.UseDeveloperExceptionPage() |> ignore
+        if app.Environment.IsDevelopment() then
+            app.UseDeveloperExceptionPage() |> ignore
 
-    app.UseStaticFiles() |> ignore
-    app.UseGiraffe(webApp)
+        app.UseStaticFiles() |> ignore
+        app.UseGiraffe(webApp)
 
-    app.Run()
-    0
+        app.Run()
+        0
