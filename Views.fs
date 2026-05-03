@@ -28,13 +28,16 @@ let css = """
 }
 
 body {
-    font-family: 'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', sans-serif;
+    font-family: 'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', 'Inter', sans-serif;
     color: var(--text-main);
     background-color: var(--bg-color);
     background-image: radial-gradient(#000 1px, transparent 1px);
     background-size: 20px 20px;
     margin: 0;
-    padding: 20px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 h1, h2, h3 {
@@ -47,6 +50,49 @@ h1, h2, h3 {
 .container {
     max-width: 1200px;
     margin: 0 auto;
+    padding: 20px;
+    flex: 1;
+}
+
+/* Navbar */
+.navbar {
+    background-color: white;
+    border-bottom: var(--border-width) solid black;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0px 4px 0px 0px rgba(0,0,0,1);
+}
+
+.nav-brand {
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: var(--primary);
+    text-shadow: 2px 2px 0px black;
+    text-decoration: none;
+    letter-spacing: 2px;
+}
+
+.nav-links a {
+    color: black;
+    text-decoration: none;
+    font-weight: bold;
+    margin-left: 20px;
+    padding: 8px 16px;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.nav-links a:hover {
+    background-color: var(--primary);
+    border: 2px solid black;
+    box-shadow: 2px 2px 0px 0px black;
+    transform: translateY(-2px);
 }
 
 /* Header */
@@ -57,6 +103,7 @@ h1, h2, h3 {
     padding: 30px;
     border-radius: 12px;
     margin-bottom: 40px;
+    margin-top: 20px;
     text-align: center;
 }
 
@@ -80,16 +127,29 @@ h1, h2, h3 {
     border-radius: 12px;
     box-shadow: var(--shadow-offset) var(--shadow-offset) 0px 0px black;
     overflow: hidden;
-    transition: transform 0.1s, box-shadow 0.1s;
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
 }
 
 .card:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0px 0px black;
+    transform: translate(-4px, -4px) rotate(-1deg);
+    box-shadow: 8px 8px 0px 0px black;
+}
+
+.card-img-placeholder {
+    height: 200px; 
+    background-color: #334155; 
+    background-size: cover; 
+    background-position: center;
+    border-bottom: var(--border-width) solid black;
 }
 
 .card-content {
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }
 
 .card-title {
@@ -99,8 +159,8 @@ h1, h2, h3 {
 }
 
 .card-subtitle {
-    font-size: 1.2rem;
-    font-weight: bold;
+    font-size: 1.3rem;
+    font-weight: 900;
     color: var(--accent);
     margin-bottom: 15px;
 }
@@ -109,7 +169,26 @@ h1, h2, h3 {
     font-size: 0.95rem;
     line-height: 1.5;
     margin-bottom: 20px;
+    flex: 1;
 }
+
+/* Manufacturer Tags */
+.tag {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    border: 2px solid black;
+    margin-bottom: 15px;
+    box-shadow: 2px 2px 0px 0px black;
+}
+
+.tag.Airbus { background-color: #93c5fd; }
+.tag.Boeing { background-color: #86efac; }
+.tag.Embraer { background-color: #fde047; }
+.tag.Bombardier { background-color: #fca5a5; }
+.tag.COMAC { background-color: #d8b4fe; }
 
 /* Buttons */
 .btn {
@@ -118,35 +197,40 @@ h1, h2, h3 {
     color: black;
     text-decoration: none;
     padding: 12px 24px;
-    font-weight: bold;
+    font-weight: 900;
+    text-transform: uppercase;
     border: var(--border-width) solid black;
     border-radius: 8px;
-    box-shadow: 3px 3px 0px 0px black;
+    box-shadow: 4px 4px 0px 0px black;
     cursor: pointer;
-    transition: all 0.1s;
+    transition: all 0.15s;
+    text-align: center;
 }
 
 .btn:hover {
-    background-color: #fce7f3;
+    background-color: #fbcfe8;
     transform: translate(-2px, -2px);
-    box-shadow: 5px 5px 0px 0px black;
+    box-shadow: 6px 6px 0px 0px black;
 }
 
 .btn:active {
     transform: translate(2px, 2px);
-    box-shadow: 0px 0px 0px 0px black;
+    box-shadow: 1px 1px 0px 0px black;
 }
 
 /* Forms */
 input, select {
     border: var(--border-width) solid black !important;
-    box-shadow: 3px 3px 0px 0px rgba(0,0,0,0.1);
+    box-shadow: 3px 3px 0px 0px black !important;
     font-family: inherit;
+    transition: transform 0.1s;
 }
 
 input:focus, select:focus {
     outline: none;
     background-color: #e0f2fe;
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0px 0px black !important;
 }
 
 /* Chart Container */
@@ -163,35 +247,79 @@ input:focus, select:focus {
 .payment-container {
     max-width: 600px;
     margin: 50px auto;
-    padding: 30px;
+    padding: 40px;
     background: white;
     border: var(--border-width) solid black;
-    box-shadow: 8px 8px 0px 0px black;
+    box-shadow: 10px 10px 0px 0px black;
     border-radius: 15px;
 }
 
-.form-group { margin-bottom: 20px; }
-.form-label { display: block; margin-bottom: 8px; font-weight: bold; }
+.form-group { margin-bottom: 25px; position: relative; }
+.form-label { display: block; margin-bottom: 8px; font-weight: 900; font-size: 1.1rem; }
 .form-input {
     width: 100%;
-    padding: 12px;
+    padding: 14px 14px 14px 40px;
     border-radius: 8px;
     font-size: 16px;
     border: var(--border-width) solid black;
+    box-sizing: border-box;
 }
+
+.input-icon {
+    position: absolute;
+    left: 14px;
+    top: 42px;
+    font-size: 1.2rem;
+    color: #64748b;
+}
+
 .card-logos { display: flex; gap: 15px; margin-top: 10px; }
 .card-logo {
-    border: 2px solid #ddd;
+    border: 2px solid #000;
     border-radius: 8px;
     padding: 10px 20px;
     cursor: pointer;
-    font-weight: bold;
+    font-weight: 900;
+    transition: all 0.2s;
+    background-color: white;
+}
+.card-logo:hover {
+    transform: translateY(-2px);
+    box-shadow: 2px 2px 0px 0px black;
 }
 .card-logo.selected {
     border: var(--border-width) solid black;
     background-color: var(--primary);
-    box-shadow: 3px 3px 0px 0px black;
+    box-shadow: 4px 4px 0px 0px black;
+    transform: translateY(-2px);
 }
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 50px 20px;
+    background-color: white;
+    border: var(--border-width) solid black;
+    border-radius: 12px;
+    box-shadow: 6px 6px 0px 0px black;
+    margin: 40px 0;
+}
+.empty-state h2 { font-size: 2.5rem; margin-bottom: 10px; }
+.empty-state p { font-size: 1.2rem; color: #64748b; margin-bottom: 25px; }
+.empty-state .emoji { font-size: 5rem; margin-bottom: 20px; }
+
+/* Footer */
+.footer {
+    background-color: #1e293b;
+    color: white;
+    text-align: center;
+    padding: 30px;
+    border-top: var(--border-width) solid black;
+    margin-top: 60px;
+}
+.footer p { margin: 5px 0; font-weight: bold; }
+.footer-links a { color: var(--primary); text-decoration: none; margin: 0 10px; font-weight: bold; }
+.footer-links a:hover { text-decoration: underline; }
 """
 
 let layout (title: string) (content: XmlNode list) =
@@ -206,7 +334,23 @@ let layout (title: string) (content: XmlNode list) =
         ]
         body [] (
             [
+                nav [ _class "navbar" ] [
+                    a [ _href "/"; _class "nav-brand" ] [ str "SKYPAY" ]
+                    div [ _class "nav-links" ] [
+                        a [ _href "/" ] [ str "Home" ]
+                        a [ _href "#" ] [ str "Orders" ]
+                        a [ _href "#" ] [ str "Cart (0)" ]
+                    ]
+                ]
                 div [ _class "container" ] content
+                footer [ _class "footer" ] [
+                    p [] [ str "© 2026 Skypay Aircraft Shop. All flights reserved." ]
+                    div [ _class "footer-links" ] [
+                        a [ _href "#" ] [ str "About Us" ]
+                        a [ _href "#" ] [ str "Support" ]
+                        a [ _href "#" ] [ str "Terms of Service" ]
+                    ]
+                ]
             ]
         )
     ]
@@ -356,33 +500,42 @@ let dashboardView (aircrafts: Aircraft list) (topStats: Aircraft list) (searchQu
 
         div [] [ h2 [] [ str "Available Aircraft" ] ]
 
-        div [ _class "grid" ] (
-            aircrafts |> List.map (fun item ->
-                // Simplified description logic
-                let descText = 
-                    if item.Description.Length > 80 then 
-                        item.Description.Substring(0, 80) + "..." 
-                    else 
-                        item.Description
-                
-                let bgStyle = sprintf "height: 200px; background-color: #334155; background-image: url('%s'); background-size: cover; background-position: center;" item.ImageUrl
-                let priceText = sprintf "$%s USD" (item.Price.ToString("N0"))
-                let mfgText = sprintf "Manufacturer: %s" item.Manufacturer
-                let linkUrl = sprintf "/checkout/%s" (item.Id.ToString())
+        if aircrafts.Length = 0 then
+            div [ _class "empty-state" ] [
+                div [ _class "emoji" ] [ str "🛩️💨" ]
+                h2 [] [ str "No Aircraft Found!" ]
+                p [] [ str "Looks like we don't have what you're looking for." ]
+                a [ _href "/"; _class "btn" ] [ str "Clear Filters" ]
+            ]
+        else
+            div [ _class "grid" ] (
+                aircrafts |> List.map (fun item ->
+                    // Simplified description logic
+                    let descText = 
+                        if item.Description.Length > 80 then 
+                            item.Description.Substring(0, 80) + "..." 
+                        else 
+                            item.Description
+                    
+                    let bgStyle = sprintf "background-image: url('%s');" item.ImageUrl
+                    let priceText = sprintf "$%s USD" (item.Price.ToString("N0"))
+                    let linkUrl = sprintf "/checkout/%s" (item.Id.ToString())
 
-                div [ _class "card" ] [
-                    // Placeholder image div
-                    div [ _style bgStyle ] []
-                    div [ _class "card-content" ] [
-                        h3 [ _class "card-title" ] [ str item.Model ]
-                        div [ _class "card-subtitle" ] [ str priceText ]
-                        p [ _class "card-desc" ] [ str descText ]
-                        p [ _style "font-size: 0.8rem; color: #64748b; margin-bottom: 20px;" ] [ str mfgText ]
-                        a [ _href linkUrl; _class "btn" ] [ str "Select Aircraft" ]
+                    div [ _class "card" ] [
+                        // Placeholder image div
+                        div [ _class "card-img-placeholder"; _style bgStyle ] []
+                        div [ _class "card-content" ] [
+                            h3 [ _class "card-title" ] [ str item.Model ]
+                            div [ _class "card-subtitle" ] [ str priceText ]
+                            p [ _class "card-desc" ] [ str descText ]
+                            div [] [
+                                span [ _class (sprintf "tag %s" item.Manufacturer) ] [ str item.Manufacturer ]
+                            ]
+                            a [ _href linkUrl; _class "btn" ] [ str "Buy Now" ]
+                        ]
                     ]
-                ]
+                )
             )
-        )
 
         script [] [ rawText chartScript ]
     ]
@@ -403,39 +556,44 @@ let paymentView (aircraft: Aircraft) =
                 div [ _class "form-group" ] [
                     label [ _class "form-label" ] [ str "Payment Method" ]
                     div [ _class "card-logos" ] [
-                        div [ _class "card-logo selected"; attr "onclick" "selectCard(this)" ] [ str "VISA" ]
-                        div [ _class "card-logo"; attr "onclick" "selectCard(this)" ] [ str "MasterCard" ]
+                        div [ _class "card-logo selected"; attr "onclick" "selectCard(this)" ] [ str "💳 VISA" ]
+                        div [ _class "card-logo"; attr "onclick" "selectCard(this)" ] [ str "💳 MasterCard" ]
                     ]
                     input [ _type "hidden"; _name "cardType"; _id "cardType"; _value "VISA" ]
                 ]
 
                 div [ _class "form-group" ] [
                     label [ _class "form-label"; attr "for" "cardNumber" ] [ str "Card Number" ]
+                    div [ _class "input-icon" ] [ str "💳" ]
                     input [ _type "text"; _id "cardNumber"; _class "form-input"; _placeholder "0000 0000 0000 0000"; _required ]
                 ]
 
                 div [ _style "display: grid; grid-template-columns: 1fr 1fr; gap: 20px;" ] [
                     div [ _class "form-group" ] [
                         label [ _class "form-label"; attr "for" "expiry" ] [ str "Expiry Date" ]
+                        div [ _class "input-icon" ] [ str "📅" ]
                         input [ _type "text"; _id "expiry"; _class "form-input"; _placeholder "MM/YY"; _required ]
                     ]
                     div [ _class "form-group" ] [
                         label [ _class "form-label"; attr "for" "cvc" ] [ str "CVC" ]
+                        div [ _class "input-icon" ] [ str "🔒" ]
                         input [ _type "text"; _id "cvc"; _class "form-input"; _placeholder "123"; _required ]
                     ]
                 ]
 
                 div [ _class "form-group" ] [
                     label [ _class "form-label"; attr "for" "airport" ] [ str "Delivery Airport Address" ]
+                    div [ _class "input-icon" ] [ str "📍" ]
                     input [ _type "text"; _id "airport"; _class "form-input"; _placeholder "Full Address of Airport or ICAO Code"; _required ]
                 ]
                 
                 div [ _class "form-group" ] [
                      label [ _class "form-label"; attr "for" "country" ] [ str "Country (Detailed)" ]
+                     div [ _class "input-icon" ] [ str "🌍" ]
                      input [ _type "text"; _id "country"; _class "form-input"; _placeholder "Singapore, Cambodia, etc."; _required ]
                 ]
 
-                button [ _type "submit"; _class "btn"; _style "margin-top: 10px;" ] [ str "Complete Purchase ($)" ]
+                button [ _type "submit"; _class "btn"; _style "margin-top: 10px; width: 100%;" ] [ str "Complete Purchase ($)" ]
             ]
             
             p [ _style "text-align: center; margin-top: 20px; font-size: 0.8rem; color: #64748b;" ] [ str "Secure 256-bit SSL Encrypted Transaction" ]
