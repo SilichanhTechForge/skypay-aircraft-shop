@@ -565,32 +565,32 @@ let paymentView (aircraft: Aircraft) =
                 div [ _class "form-group" ] [
                     label [ _class "form-label"; attr "for" "cardNumber" ] [ str "Card Number" ]
                     div [ _class "input-icon" ] [ str "💳" ]
-                    input [ _type "text"; _id "cardNumber"; _class "form-input"; _placeholder "0000 0000 0000 0000"; _required ]
+                    input [ _type "text"; _name "cardNumber"; _id "cardNumber"; _class "form-input"; _placeholder "0000 0000 0000 0000"; _required ]
                 ]
 
                 div [ _style "display: grid; grid-template-columns: 1fr 1fr; gap: 20px;" ] [
                     div [ _class "form-group" ] [
                         label [ _class "form-label"; attr "for" "expiry" ] [ str "Expiry Date" ]
                         div [ _class "input-icon" ] [ str "📅" ]
-                        input [ _type "text"; _id "expiry"; _class "form-input"; _placeholder "MM/YY"; _required ]
+                        input [ _type "text"; _name "expiry"; _id "expiry"; _class "form-input"; _placeholder "MM/YY"; _required ]
                     ]
                     div [ _class "form-group" ] [
                         label [ _class "form-label"; attr "for" "cvc" ] [ str "CVC" ]
                         div [ _class "input-icon" ] [ str "🔒" ]
-                        input [ _type "text"; _id "cvc"; _class "form-input"; _placeholder "123"; _required ]
+                        input [ _type "text"; _name "cvc"; _id "cvc"; _class "form-input"; _placeholder "123"; _required ]
                     ]
                 ]
 
                 div [ _class "form-group" ] [
                     label [ _class "form-label"; attr "for" "airport" ] [ str "Delivery Airport Address" ]
                     div [ _class "input-icon" ] [ str "📍" ]
-                    input [ _type "text"; _id "airport"; _class "form-input"; _placeholder "Full Address of Airport or ICAO Code"; _required ]
+                    input [ _type "text"; _name "airport"; _id "airport"; _class "form-input"; _placeholder "Full Address of Airport or ICAO Code"; _required ]
                 ]
                 
                 div [ _class "form-group" ] [
                      label [ _class "form-label"; attr "for" "country" ] [ str "Country (Detailed)" ]
                      div [ _class "input-icon" ] [ str "🌍" ]
-                     input [ _type "text"; _id "country"; _class "form-input"; _placeholder "Singapore, Cambodia, etc."; _required ]
+                     input [ _type "text"; _name "country"; _id "country"; _class "form-input"; _placeholder "Singapore, Cambodia, etc."; _required ]
                 ]
 
                 button [ _type "submit"; _class "btn"; _style "margin-top: 10px; width: 100%;" ] [ str "Complete Purchase ($)" ]

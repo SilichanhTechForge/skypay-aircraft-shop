@@ -102,10 +102,25 @@ let processPaymentHandler : HttpHandler =
 
 let processPaymentWithIdHandler (id: Guid) : HttpHandler =
     fun next ctx ->
-         let aircraft = aircraftDatabase |> List.tryFind (fun a -> a.Id = id)
-         match aircraft with
-         | Some a -> htmlView (successView a) next ctx
-         | None -> (setStatusCode 404 >=> text "Error processing payment") next ctx
+        task {
+            // Read the POST form data sent from the browser
+            let! form = ctx.Request.ReadFormAsync()
+            let cardNumber = if form.ContainsKey("cardNumber") then form.["cardNumber"].ToString() else ""
+            let cvc = if form.ContainsKey("cvc") then form.["cvc"].ToString() else ""
+            
+            let aircraft = aircraftDatabase |> List.tryFind (fun a -> a.Id = id)
+            match aircraft with
+            | Some a -> 
+                // Basic Server-Side Logic (Validation)
+                if String.IsNullOrWhiteSpace(cardNumber) || cardNumber.Replace(" ", "").Length < 15 then
+                    return! (setStatusCode 400 >=> text "Payment Failed: Invalid Card Number (Must be 15-16 digits)") next ctx
+                elif String.IsNullOrWhiteSpace(cvc) || cvc.Length < 3 then
+                    return! (setStatusCode 400 >=> text "Payment Failed: Invalid CVC (Must be at least 3 digits)") next ctx
+                else
+                    return! htmlView (successView a) next ctx
+            | None -> 
+                return! (setStatusCode 404 >=> text "Error processing payment: Aircraft not found") next ctx
+        }
 
 
 let webApp =
