@@ -17,6 +17,27 @@ open Skypay.Models
 open Skypay.Views
 
 // ---------------------------------
+// Lambda Calculus: Discount System
+// ---------------------------------
+// This is a CURRIED lambda function. It takes a 'rate', and returns
+// ANOTHER function that takes a 'price'. This is the core of lambda calculus!
+// applyDiscount : decimal -> decimal -> decimal
+let applyDiscount = fun rate -> fun price -> price * (1.0m - rate)
+
+// Partial Application: We 'bake in' the rate to create specific discount functions.
+// vipDiscount and staffDiscount are both lambda functions created from applyDiscount.
+let vipDiscount   = applyDiscount 0.20m  // 20% off
+let staffDiscount = applyDiscount 0.50m  // 50% off
+
+// A Higher-Order Function: it takes a promo code string,
+// and RETURNS the correct lambda discount function to apply.
+let getDiscountFn = fun (code: string) ->
+    match code.Trim().ToUpper() with
+    | "VIP20"   -> Some (vipDiscount,   "VIP20 — 20% Off Applied! ✈️")
+    | "STAFF50" -> Some (staffDiscount, "STAFF50 — 50% Off Applied! 🎉")
+    | _         -> None
+
+// ---------------------------------
 // Web App Handlers
 // ---------------------------------
 
@@ -98,7 +119,7 @@ let processPaymentHandler : HttpHandler =
         // Let's assume the user just bought the "A320" for the success demo if we can't parse easily without HttpContext parsing logic.
         // Actually, we can read the REFERER or just make the form post to /process-payment/{id}
         
-        htmlView (successView dummyAircraft) next ctx
+        htmlView (successView dummyAircraft 0m "") next ctx
 
 let processPaymentWithIdHandler (id: Guid) : HttpHandler =
     fun next ctx ->
@@ -106,18 +127,29 @@ let processPaymentWithIdHandler (id: Guid) : HttpHandler =
             // Read the POST form data sent from the browser
             let! form = ctx.Request.ReadFormAsync()
             let cardNumber = if form.ContainsKey("cardNumber") then form.["cardNumber"].ToString() else ""
-            let cvc = if form.ContainsKey("cvc") then form.["cvc"].ToString() else ""
+            let cvc        = if form.ContainsKey("cvc")        then form.["cvc"].ToString()        else ""
+            let promoCode  = if form.ContainsKey("promoCode")  then form.["promoCode"].ToString()  else ""
             
             let aircraft = aircraftDatabase |> List.tryFind (fun a -> a.Id = id)
             match aircraft with
             | Some a -> 
-                // Basic Server-Side Logic (Validation)
+                // Basic Server-Side Validation
                 if String.IsNullOrWhiteSpace(cardNumber) || cardNumber.Replace(" ", "").Length < 15 then
                     return! (setStatusCode 400 >=> text "Payment Failed: Invalid Card Number (Must be 15-16 digits)") next ctx
                 elif String.IsNullOrWhiteSpace(cvc) || cvc.Length < 3 then
                     return! (setStatusCode 400 >=> text "Payment Failed: Invalid CVC (Must be at least 3 digits)") next ctx
                 else
-                    return! htmlView (successView a) next ctx
+                    // ---- LAMBDA CALCULUS DISCOUNT LOGIC ----
+                    // Use getDiscountFn (a Higher-Order Function) to look up the promo code.
+                    // If valid, it returns the correct lambda function (e.g. vipDiscount).
+                    // We then APPLY that lambda to the aircraft price to get the final price.
+                    let discountResult = getDiscountFn promoCode
+                    let finalPrice, discountMsg =
+                        match discountResult with
+                        | Some (discountFn, msg) -> discountFn a.Price, msg  // Apply the lambda!
+                        | None                  -> a.Price, ""               // No discount
+                    // ---- END LAMBDA LOGIC ----
+                    return! htmlView (successView a finalPrice discountMsg) next ctx
             | None -> 
                 return! (setStatusCode 404 >=> text "Error processing payment: Aircraft not found") next ctx
         }

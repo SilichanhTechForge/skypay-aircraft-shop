@@ -543,6 +543,52 @@ let dashboardView (aircrafts: Aircraft list) (topStats: Aircraft list) (searchQu
 let paymentView (aircraft: Aircraft) =
     let priceInfo = sprintf "$%s" (aircraft.Price.ToString("N0"))
     let actionUrl = sprintf "/process-payment/%O" aircraft.Id
+    // Build JS by concatenation to avoid sprintf %% conflicts with % in JS
+    let priceJs   = string (int aircraft.Price)
+    let jsScript  =
+        "const applyDiscount = rate => price => price * (1 - rate);\n" +
+        "const vipDiscount   = applyDiscount(0.20);\n" +
+        "const staffDiscount = applyDiscount(0.50);\n" +
+        "const getDiscountFn = code => {\n" +
+        "  switch (code.trim().toUpperCase()) {\n" +
+        "    case 'VIP20':   return { fn: vipDiscount,   label: 'VIP20 - 20% Off!' };\n" +
+        "    case 'STAFF50': return { fn: staffDiscount, label: 'STAFF50 - 50% Off!' };\n" +
+        "    default:        return null;\n" +
+        "  }\n" +
+        "};\n" +
+        "const originalPrice = " + priceJs + ";\n" +
+        "function formatPrice(n) { return '$' + Math.round(n).toLocaleString('en-US') + ' USD'; }\n" +
+        "function validatePromo(code) {\n" +
+        "  const badge   = document.getElementById('promo-badge');\n" +
+        "  const hint    = document.getElementById('promo-hint');\n" +
+        "  const preview = document.getElementById('price-preview');\n" +
+        "  if (code.trim() === '') {\n" +
+        "    badge.innerHTML = '';\n" +
+        "    if (hint) badge.appendChild(hint);\n" +
+        "    preview.style.display = 'none'; return;\n" +
+        "  }\n" +
+        "  const result = getDiscountFn(code);\n" +
+        "  if (result) {\n" +
+        "    const finalPrice = result.fn(originalPrice);\n" +
+        "    const saved      = originalPrice - finalPrice;\n" +
+        "    badge.innerHTML = '<div style=\"display:flex;align-items:center;gap:10px;padding:10px 14px;background:#dcfce7;border:2px solid #16a34a;border-radius:8px;box-shadow:2px 2px 0px black;animation:popIn 0.2s ease;\"><span style=\"font-size:1.3rem;\">&#9989;</span><span style=\"font-weight:900;color:#15803d;\">' + result.label + '</span></div>';\n" +
+        "    document.getElementById('original-price').textContent  = formatPrice(originalPrice);\n" +
+        "    document.getElementById('discounted-price').textContent = formatPrice(finalPrice);\n" +
+        "    document.getElementById('saved-amount').textContent     = formatPrice(saved);\n" +
+        "    preview.style.display = 'block';\n" +
+        "  } else {\n" +
+        "    badge.innerHTML = '<div style=\"display:flex;align-items:center;gap:10px;padding:10px 14px;background:#fee2e2;border:2px solid #dc2626;border-radius:8px;box-shadow:2px 2px 0px black;animation:popIn 0.2s ease;\"><span style=\"font-size:1.3rem;\">&#10060;</span><span style=\"font-weight:900;color:#dc2626;\">Invalid promo code</span></div>';\n" +
+        "    preview.style.display = 'none';\n" +
+        "  }\n" +
+        "}\n" +
+        "function selectCard(el) {\n" +
+        "  document.querySelectorAll('.card-logo').forEach(e => e.classList.remove('selected'));\n" +
+        "  el.classList.add('selected');\n" +
+        "  document.getElementById('cardType').value = el.innerText;\n" +
+        "}\n" +
+        "const animStyle = document.createElement('style');\n" +
+        "animStyle.textContent = '@keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }';\n" +
+        "document.head.appendChild(animStyle);\n"
 
     layout "Checkout" [
         div [ _class "payment-container" ] [
@@ -561,13 +607,11 @@ let paymentView (aircraft: Aircraft) =
                     ]
                     input [ _type "hidden"; _name "cardType"; _id "cardType"; _value "VISA" ]
                 ]
-
                 div [ _class "form-group" ] [
                     label [ _class "form-label"; attr "for" "cardNumber" ] [ str "Card Number" ]
                     div [ _class "input-icon" ] [ str "💳" ]
                     input [ _type "text"; _name "cardNumber"; _id "cardNumber"; _class "form-input"; _placeholder "0000 0000 0000 0000"; _required ]
                 ]
-
                 div [ _style "display: grid; grid-template-columns: 1fr 1fr; gap: 20px;" ] [
                     div [ _class "form-group" ] [
                         label [ _class "form-label"; attr "for" "expiry" ] [ str "Expiry Date" ]
@@ -580,40 +624,85 @@ let paymentView (aircraft: Aircraft) =
                         input [ _type "text"; _name "cvc"; _id "cvc"; _class "form-input"; _placeholder "123"; _required ]
                     ]
                 ]
-
                 div [ _class "form-group" ] [
                     label [ _class "form-label"; attr "for" "airport" ] [ str "Delivery Airport Address" ]
                     div [ _class "input-icon" ] [ str "📍" ]
                     input [ _type "text"; _name "airport"; _id "airport"; _class "form-input"; _placeholder "Full Address of Airport or ICAO Code"; _required ]
                 ]
-                
                 div [ _class "form-group" ] [
                      label [ _class "form-label"; attr "for" "country" ] [ str "Country (Detailed)" ]
                      div [ _class "input-icon" ] [ str "🌍" ]
                      input [ _type "text"; _name "country"; _id "country"; _class "form-input"; _placeholder "Singapore, Cambodia, etc."; _required ]
                 ]
 
-                button [ _type "submit"; _class "btn"; _style "margin-top: 10px; width: 100%;" ] [ str "Complete Purchase ($)" ]
+                // --- LIVE PROMO CODE VALIDATOR ---
+                div [ _class "form-group" ] [
+                    label [ _class "form-label"; attr "for" "promoCode" ] [ str "🎟️ Promo Code (Optional)" ]
+                    div [ _class "input-icon" ] [ str "🏷️" ]
+                    input [
+                        _type "text"; _name "promoCode"; _id "promoCode"; _class "form-input"
+                        _placeholder "e.g. VIP20 or STAFF50"
+                        attr "oninput" "validatePromo(this.value)"
+                        attr "autocomplete" "off"
+                        attr "style" "text-transform:uppercase;"
+                    ]
+                    div [ _id "promo-badge"; _style "margin-top: 10px; min-height: 40px;" ] [
+                        p [ _id "promo-hint"; _style "font-size: 0.82rem; color: #64748b; margin: 0;" ] [
+                            str "Try: "; strong [] [ str "VIP20" ]
+                            str " (20% off)  |  "; strong [] [ str "STAFF50" ]
+                            str " (50% off)"
+                        ]
+                    ]
+                ]
+
+                // Dynamic price preview box (shown when valid code entered)
+                div [ _id "price-preview"; _style "display:none; margin-bottom: 20px; padding: 16px; background:#f0fdf4; border: 3px solid #16a34a; border-radius: 12px; box-shadow: 3px 3px 0px black; text-align:center;" ] [
+                    p [ _style "margin: 0; font-size: 0.85rem; color: #64748b; text-decoration: line-through;" ] [
+                        str "Original: "; span [ _id "original-price" ] []
+                    ]
+                    p [ _style "margin: 5px 0 0 0; font-size: 1.5rem; font-weight: 900; color: #16a34a;" ] [
+                        str "You pay: "; span [ _id "discounted-price" ] []
+                    ]
+                    p [ _style "margin: 4px 0 0 0; font-size: 0.85rem; color: #475569;" ] [
+                        str "You save: "; span [ _id "saved-amount" ] []
+                    ]
+                ]
+
+                button [ _type "submit"; _class "btn"; _style "margin-top: 10px; width: 100%;" ] [ str "Complete Purchase" ]
             ]
-            
             p [ _style "text-align: center; margin-top: 20px; font-size: 0.8rem; color: #64748b;" ] [ str "Secure 256-bit SSL Encrypted Transaction" ]
         ]
-
-        script [] [ rawText """
-            function selectCard(element) {
-                document.querySelectorAll('.card-logo').forEach(el => el.classList.remove('selected'));
-                element.classList.add('selected');
-                document.getElementById('cardType').value = element.innerText;
-            }
-        """ ]
+        script [] [ rawText jsScript ]
     ]
 
-let successView (aircraft: Aircraft) =
+
+
+// Updated to accept finalPrice (after lambda discount) and a discountMsg
+let successView (aircraft: Aircraft) (finalPrice: decimal) (discountMsg: string) =
+    let originalPriceText = sprintf "$%s USD" (aircraft.Price.ToString("N0"))
+    let finalPriceText    = sprintf "$%s USD" (finalPrice.ToString("N0"))
+    let hadDiscount       = discountMsg <> "" && finalPrice < aircraft.Price
+
     layout "Order Placed" [
         div [ _class "container"; _style "text-align: center; padding-top: 50px;" ] [
-            h1 [] [ str "Order Placed" ]
-            p [] [ str (sprintf "We have received your order for the %s." aircraft.Model) ]
-            p [] [ str "We will contact you shortly about delivery." ]
+            div [ _style "font-size: 4rem; margin-bottom: 10px;" ] [ str "✅" ]
+            h1 [] [ str "Order Confirmed!" ]
+            p [ _style "font-size: 1.2rem;" ] [ str (sprintf "We have received your order for the %s." aircraft.Model) ]
+
+            // Discount Summary Box (only shows if a promo code was used)
+            if hadDiscount then
+                div [ _style "margin: 25px auto; max-width: 400px; background: #fef08a; border: 3px solid black; border-radius: 12px; padding: 20px; box-shadow: 4px 4px 0px black;" ] [
+                    p [ _style "font-weight: 900; font-size: 1.1rem; margin: 0 0 10px 0;" ] [ str (sprintf "🎟️ %s" discountMsg) ]
+                    p [ _style "margin: 5px 0; text-decoration: line-through; color: #64748b;" ] [ str (sprintf "Original Price: %s" originalPriceText) ]
+                    p [ _style "margin: 5px 0; font-size: 1.5rem; font-weight: 900; color: #16a34a;" ] [ str (sprintf "You Paid: %s" finalPriceText) ]
+                    p [ _style "margin: 10px 0 0 0; font-size: 0.85rem; color: #475569;" ] [ str (sprintf "You saved: $%s USD 🎉" ((aircraft.Price - finalPrice).ToString("N0"))) ]
+                ]
+            else
+                div [ _style "margin: 25px auto; max-width: 400px; background: white; border: 3px solid black; border-radius: 12px; padding: 20px; box-shadow: 4px 4px 0px black;" ] [
+                    p [ _style "font-size: 1.4rem; font-weight: 900; margin: 0;" ] [ str (sprintf "Total Paid: %s" finalPriceText) ]
+                ]
+
+            p [ _style "color: #64748b; margin-top: 15px;" ] [ str "We will contact you shortly about delivery." ]
             a [ _href "/"; _class "btn"; _style "margin-top: 20px;" ] [ str "Back to Shop" ]
         ]
     ]
