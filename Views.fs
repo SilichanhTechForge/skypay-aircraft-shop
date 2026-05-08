@@ -518,7 +518,8 @@ let dashboardView (aircrafts: Aircraft list) (topStats: Aircraft list) (searchQu
                             item.Description
                     
                     let bgStyle = sprintf "background-image: url('%s');" item.ImageUrl
-                    let priceText = sprintf "$%s USD" (item.Price.ToString("N0"))
+                    // Strip <USD> unit for display formatting (decimal/1m<USD> removes the unit)
+                    let priceText = sprintf "$%s USD" ((item.Price / 1m<USD>).ToString("N0"))
                     let linkUrl = sprintf "/checkout/%s" (item.Id.ToString())
 
                     div [ _class "card" ] [
@@ -541,10 +542,10 @@ let dashboardView (aircrafts: Aircraft list) (topStats: Aircraft list) (searchQu
     ]
 
 let paymentView (aircraft: Aircraft) =
-    let priceInfo = sprintf "$%s" (aircraft.Price.ToString("N0"))
+    let priceInfo = sprintf "$%s" ((aircraft.Price / 1m<USD>).ToString("N0"))
     let actionUrl = sprintf "/process-payment/%O" aircraft.Id
     // Build JS by concatenation to avoid sprintf %% conflicts with % in JS
-    let priceJs   = string (int aircraft.Price)
+    let priceJs   = string (int (aircraft.Price / 1m<USD>))
     let jsScript  =
         "const applyDiscount = rate => price => price * (1 - rate);\n" +
         "const vipDiscount   = applyDiscount(0.20);\n" +
@@ -678,9 +679,9 @@ let paymentView (aircraft: Aircraft) =
 
 
 // Updated to accept finalPrice (after lambda discount) and a discountMsg
-let successView (aircraft: Aircraft) (finalPrice: decimal) (discountMsg: string) =
-    let originalPriceText = sprintf "$%s USD" (aircraft.Price.ToString("N0"))
-    let finalPriceText    = sprintf "$%s USD" (finalPrice.ToString("N0"))
+let successView (aircraft: Aircraft) (finalPrice: decimal<USD>) (discountMsg: string) =
+    let originalPriceText = sprintf "$%s USD" ((aircraft.Price / 1m<USD>).ToString("N0"))
+    let finalPriceText    = sprintf "$%s USD" ((finalPrice / 1m<USD>).ToString("N0"))
     let hadDiscount       = discountMsg <> "" && finalPrice < aircraft.Price
 
     layout "Order Placed" [
@@ -695,7 +696,7 @@ let successView (aircraft: Aircraft) (finalPrice: decimal) (discountMsg: string)
                     p [ _style "font-weight: 900; font-size: 1.1rem; margin: 0 0 10px 0;" ] [ str (sprintf "🎟️ %s" discountMsg) ]
                     p [ _style "margin: 5px 0; text-decoration: line-through; color: #64748b;" ] [ str (sprintf "Original Price: %s" originalPriceText) ]
                     p [ _style "margin: 5px 0; font-size: 1.5rem; font-weight: 900; color: #16a34a;" ] [ str (sprintf "You Paid: %s" finalPriceText) ]
-                    p [ _style "margin: 10px 0 0 0; font-size: 0.85rem; color: #475569;" ] [ str (sprintf "You saved: $%s USD 🎉" ((aircraft.Price - finalPrice).ToString("N0"))) ]
+                    p [ _style "margin: 10px 0 0 0; font-size: 0.85rem; color: #475569;" ] [ str (sprintf "You saved: $%s USD 🎉" ((aircraft.Price - finalPrice) / 1m<USD> |> fun x -> x.ToString("N0"))) ]
                 ]
             else
                 div [ _style "margin: 25px auto; max-width: 400px; background: white; border: 3px solid black; border-radius: 12px; padding: 20px; box-shadow: 4px 4px 0px black;" ] [

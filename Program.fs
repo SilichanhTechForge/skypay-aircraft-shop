@@ -21,8 +21,9 @@ open Skypay.Views
 // ---------------------------------
 // This is a CURRIED lambda function. It takes a 'rate', and returns
 // ANOTHER function that takes a 'price'. This is the core of lambda calculus!
-// applyDiscount : decimal -> decimal -> decimal
-let applyDiscount = fun rate -> fun price -> price * (1.0m - rate)
+// It works with decimal<USD> so the Unit of Measure is preserved through the discount!
+// applyDiscount : decimal -> decimal<USD> -> decimal<USD>
+let applyDiscount = fun rate -> fun (price: decimal<USD>) -> price * (1.0m - rate)
 
 // Partial Application: We 'bake in' the rate to create specific discount functions.
 // vipDiscount and staffDiscount are both lambda functions created from applyDiscount.
@@ -109,7 +110,7 @@ let processPaymentHandler : HttpHandler =
             Id = Guid.Empty
             Model = "Selected Aircraft"
             Manufacturer = "Unknown"
-            Price = 0m
+            Price = 0m<USD>
             Description = ""
             ImageUrl = ""
             SalesCount = 0 
@@ -119,7 +120,7 @@ let processPaymentHandler : HttpHandler =
         // Let's assume the user just bought the "A320" for the success demo if we can't parse easily without HttpContext parsing logic.
         // Actually, we can read the REFERER or just make the form post to /process-payment/{id}
         
-        htmlView (successView dummyAircraft 0m "") next ctx
+        htmlView (successView dummyAircraft 0m<USD> "") next ctx
 
 let processPaymentWithIdHandler (id: Guid) : HttpHandler =
     fun next ctx ->
