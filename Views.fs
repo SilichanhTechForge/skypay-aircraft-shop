@@ -320,6 +320,94 @@ input:focus, select:focus {
 .footer p { margin: 5px 0; font-weight: bold; }
 .footer-links a { color: var(--primary); text-decoration: none; margin: 0 10px; font-weight: bold; }
 .footer-links a:hover { text-decoration: underline; }
+
+/* ===== ORDER TRACKING PAGE ===== */
+.track-container {
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 40px;
+    background: white;
+    border: var(--border-width) solid black;
+    box-shadow: 10px 10px 0px 0px black;
+    border-radius: 15px;
+}
+.pipeline {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin: 35px 0;
+    position: relative;
+}
+.pipeline::before {
+    content: '';
+    position: absolute;
+    top: 23px;
+    left: 30px;
+    right: 30px;
+    height: 4px;
+    background: #e2e8f0;
+    z-index: 0;
+}
+.pipeline-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    z-index: 1;
+    flex: 1;
+}
+.step-circle {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: 3px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    font-weight: 900;
+    box-shadow: 3px 3px 0px 0px black;
+    background: #e2e8f0;
+}
+.step-done .step-circle  { background: #86efac; }
+.step-active .step-circle { background: var(--primary); animation: stepPulse 1.5s infinite; }
+.step-pending .step-circle { background: #f1f5f9; color: #94a3b8; }
+@keyframes stepPulse {
+    0%, 100% { box-shadow: 3px 3px 0px 0px black; }
+    50%       { box-shadow: 5px 5px 0px 0px black, 0 0 0 6px rgba(251,191,36,0.25); }
+}
+.step-label {
+    font-size: 0.68rem;
+    font-weight: 900;
+    text-align: center;
+    text-transform: uppercase;
+    max-width: 75px;
+    line-height: 1.3;
+}
+.step-done .step-label    { color: #16a34a; }
+.step-active .step-label  { color: #d97706; }
+.step-pending .step-label { color: #94a3b8; }
+.order-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 25px;
+}
+.order-info-cell {
+    background: #f8fafc;
+    border: 2px solid black;
+    border-radius: 8px;
+    padding: 12px 16px;
+    box-shadow: 2px 2px 0px black;
+}
+.order-info-cell .oi-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+.order-info-cell .oi-value { font-size: 1rem; font-weight: 900; }
 """
 
 let layout (title: string) (content: XmlNode list) =
@@ -338,7 +426,7 @@ let layout (title: string) (content: XmlNode list) =
                     a [ _href "/"; _class "nav-brand" ] [ str "SKYPAY" ]
                     div [ _class "nav-links" ] [
                         a [ _href "/" ] [ str "Home" ]
-                        a [ _href "#" ] [ str "Orders" ]
+                        a [ _href "/track" ] [ str "✈️ Track Order" ]
                         a [ _href "#" ] [ str "Cart (0)" ]
                     ]
                 ]
@@ -704,6 +792,148 @@ let successView (aircraft: Aircraft) (finalPrice: decimal<USD>) (discountMsg: st
                 ]
 
             p [ _style "color: #64748b; margin-top: 15px;" ] [ str "We will contact you shortly about delivery." ]
-            a [ _href "/"; _class "btn"; _style "margin-top: 20px;" ] [ str "Back to Shop" ]
+            // Tracking hint box
+            div [ _style "margin: 20px auto; max-width: 420px; background: #eff6ff; border: 3px solid black; border-radius: 12px; padding: 16px 20px; box-shadow: 4px 4px 0px black; text-align:left;" ] [
+                p [ _style "margin:0 0 6px 0; font-weight:900; font-size:1rem;" ] [ str "📦 Track Your Delivery" ]
+                p [ _style "margin:0 0 10px 0; font-size:0.85rem; color:#475569;" ] [ str "Use one of these demo order numbers on the Track page:" ]
+                p [ _style "margin:0; font-size:0.85rem; font-weight:700;" ] [
+                    str "SKY-2026-001  •  SKY-2026-002  •  SKY-2026-003"
+                ]
+            ]
+            div [ _style "margin-top:20px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap;" ] [
+                a [ _href "/"; _class "btn" ] [ str "← Back to Shop" ]
+                a [ _href "/track"; _class "btn"; _style "background:var(--accent);color:white;" ] [ str "✈️ Track Order" ]
+            ]
         ]
+    ]
+
+// ==========================================
+// ORDER TRACKING VIEW
+// ==========================================
+// This view uses pattern matching on the DeliveryStatus DU.
+// The compiler guarantees we handle ALL 5 cases — no bugs from missed branches.
+let orderTrackView (query: string) (result: OrderRecord option) =
+    let queryDisplay = if isNull query then "" else query.ToUpper()
+
+    // The 5 pipeline steps: (icon, label)
+    let steps = [
+        ("📋", "Order\nConfirmed")
+        ("🏭", "In\nProduction")
+        ("🔧", "Ready for\nDelivery")
+        ("✈️", "In\nTransit")
+        ("📦", "Delivered")
+    ]
+
+    // Pattern match on DeliveryStatus to get the active step index
+    let activeStep =
+        match result with
+        | Some { Status = OrderConfirmed }   -> 0
+        | Some { Status = InProduction }     -> 1
+        | Some { Status = ReadyForDelivery } -> 2
+        | Some { Status = InTransit }        -> 3
+        | Some { Status = Delivered }        -> 4
+        | None                               -> -1
+
+    // Pattern match to render the correct status badge
+    let statusBadgeHtml =
+        match result with
+        | Some { Status = s } ->
+            let text, color =
+                match s with
+                | OrderConfirmed   -> "✅ Order Confirmed",      "#93c5fd"
+                | InProduction     -> "🏭 In Production",       "#fde047"
+                | ReadyForDelivery -> "🔧 Ready for Delivery",  "#86efac"
+                | InTransit        -> "✈️ In Transit",          "#fbbf24"
+                | Delivered        -> "📦 Delivered",           "#4ade80"
+            [ span [ _style (sprintf "display:inline-block;padding:6px 18px;background:%s;border:2px solid black;border-radius:20px;font-weight:900;box-shadow:2px 2px 0px black;font-size:1rem;" color) ] [ str text ] ]
+        | None -> []
+
+    // Build the pipeline nodes from the steps list
+    let buildPipeline () =
+        steps |> List.mapi (fun i (icon, label) ->
+            let cls =
+                if   i < activeStep then "pipeline-step step-done"
+                elif i = activeStep then "pipeline-step step-active"
+                else                     "pipeline-step step-pending"
+            let circleIcon = if i < activeStep then "✓" else icon
+            div [ _class cls ] [
+                div [ _class "step-circle" ] [ str circleIcon ]
+                span [ _class "step-label" ] [ str label ]
+            ]
+        )
+
+    // Build the result HTML section
+    let resultSection =
+        match result with
+        | None when queryDisplay <> "" ->
+            [ div [ _style "text-align:center;padding:30px;background:#fee2e2;border:3px solid #dc2626;border-radius:12px;box-shadow:4px 4px 0px black;" ] [
+                div [ _style "font-size:3rem;" ] [ str "❌" ]
+                h2 [ _style "color:#dc2626;" ] [ str "Order Not Found" ]
+                p [] [ str (sprintf "No order found matching \"%s\". Please double-check your order number." queryDisplay) ]
+              ] ]
+        | Some order ->
+            [
+                div [ _style "text-align:center;margin-bottom:18px;" ] statusBadgeHtml
+                div [ _style "background:var(--primary);border:3px solid black;border-radius:12px;padding:18px 20px;text-align:center;box-shadow:4px 4px 0px black;margin-bottom:25px;" ] [
+                    h2 [ _style "margin:0 0 4px 0;" ] [ str (sprintf "✈️ %s" order.AircraftModel) ]
+                    p  [ _style "margin:0;font-weight:bold;" ] [ str (sprintf "Manufactured by %s" order.Manufacturer) ]
+                ]
+                div [ _class "pipeline" ] (buildPipeline ())
+                div [ _class "order-info-grid" ] [
+                    div [ _class "order-info-cell" ] [
+                        div [ _class "oi-label" ] [ str "Order Number" ]
+                        div [ _class "oi-value" ] [ str order.OrderNumber ]
+                    ]
+                    div [ _class "order-info-cell" ] [
+                        div [ _class "oi-label" ] [ str "Order Date" ]
+                        div [ _class "oi-value" ] [ str order.OrderDate ]
+                    ]
+                    div [ _class "order-info-cell"; _style "grid-column:span 2;" ] [
+                        div [ _class "oi-label" ] [ str "📍 Delivery Destination" ]
+                        div [ _class "oi-value" ] [ str order.Destination ]
+                    ]
+                    div [ _class "order-info-cell" ] [
+                        div [ _class "oi-label" ] [ str "📅 Est. Delivery" ]
+                        div [ _class "oi-value" ] [ str order.EstimatedDate ]
+                    ]
+                    div [ _class "order-info-cell" ] [
+                        div [ _class "oi-label" ] [ str "Manufacturer" ]
+                        div [ _class "oi-value" ] [ str order.Manufacturer ]
+                    ]
+                ]
+                div [ _style "margin-top:28px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" ] [
+                    a [ _href "/"; _class "btn" ] [ str "← Back to Shop" ]
+                    a [ _href "/track"; _class "btn"; _style "background:var(--accent);color:white;" ] [ str "Track Another" ]
+                ]
+            ]
+        | _ -> []
+
+    // Static top section — always shown
+    let topSection = [
+        div [ _style "text-align:center;margin-bottom:28px;" ] [
+            div [ _style "font-size:3rem;margin-bottom:8px;" ] [ str "📦" ]
+            h1 [] [ str "Track Your Order" ]
+            p [ _style "color:#64748b;" ] [ str "Enter your Skypay order number to check your aircraft delivery status." ]
+        ]
+        form [ _action "/track"; _method "get"; _style "display:flex;gap:10px;margin-bottom:14px;" ] [
+            input [
+                _type "text"; _name "order"; _id "orderInput"
+                _placeholder "e.g. SKY-2026-001"
+                _value queryDisplay
+                _style "flex:1;padding:12px 16px;border-radius:8px;font-size:16px;text-transform:uppercase;"
+            ]
+            button [ _type "submit"; _class "btn"; _style "white-space:nowrap;" ] [ str "🔍 Track" ]
+        ]
+        p [ _style "font-size:0.82rem;color:#64748b;margin-bottom:22px;" ] [
+            str "Demo orders: "
+            strong [] [ str "SKY-2026-001" ]; str "  •  "
+            strong [] [ str "SKY-2026-002" ]; str "  •  "
+            strong [] [ str "SKY-2026-003" ]; str "  •  "
+            strong [] [ str "SKY-2026-004" ]; str "  •  "
+            strong [] [ str "SKY-2026-005" ]
+        ]
+    ]
+
+    layout "Track Your Order | Skypay" [
+        div [ _class "track-container" ] (topSection @ resultSection)
     ]

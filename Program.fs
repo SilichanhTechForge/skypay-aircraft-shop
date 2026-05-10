@@ -156,11 +156,29 @@ let processPaymentWithIdHandler (id: Guid) : HttpHandler =
         }
 
 
+// ---------------------------------
+// Order Tracking Handler
+// ---------------------------------
+// GET /track          -> show the search form (empty)
+// GET /track?order=X  -> look up the order and show its delivery status
+// Map.tryFind returns Option<OrderRecord> — safe, no exceptions.
+let trackOrderHandler : HttpHandler =
+    fun next ctx ->
+        let query =
+            match ctx.TryGetQueryStringValue "order" with
+            | Some q -> q.Trim().ToUpper()
+            | None   -> ""
+        let result =
+            if query = "" then None
+            else Map.tryFind query mockOrderDatabase
+        htmlView (orderTrackView query result) next ctx
+
 let webApp =
     choose [
         route "/" >=> dashboardHandler
         routef "/checkout/%O" checkoutHandler
-        routef "/process-payment/%O" processPaymentWithIdHandler // Better URL structure
+        routef "/process-payment/%O" processPaymentWithIdHandler
+        route "/track"           >=> trackOrderHandler
         
         // Fallback for form action adjustment
         route "/process-payment" >=> processPaymentHandler 

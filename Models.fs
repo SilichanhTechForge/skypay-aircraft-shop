@@ -122,3 +122,54 @@ let topSellingAircraft =
     aircraftDatabase 
     |> List.sortByDescending (fun a -> a.SalesCount)
     |> List.take 10
+
+// ==========================================
+// ORDER TRACKING
+// ==========================================
+// A Discriminated Union (DU) represents the 5 stages of an aircraft delivery.
+// Unlike an enum, each case can carry data. The compiler enforces that every
+// pattern match handles ALL cases — making this type-safe by design.
+type DeliveryStatus =
+    | OrderConfirmed    // Step 1: Payment received, order logged
+    | InProduction      // Step 2: Aircraft being built at the factory
+    | ReadyForDelivery  // Step 3: Quality checked, awaiting shipment
+    | InTransit         // Step 4: En route to the buyer's airport
+    | Delivered         // Step 5: Handed over to the buyer
+
+// A record type for a placed order
+type OrderRecord = {
+    OrderNumber  : string
+    AircraftModel: string
+    Manufacturer : string
+    Destination  : string
+    Status       : DeliveryStatus
+    EstimatedDate: string
+    OrderDate    : string
+}
+
+// Mock order database — Map<orderNumber, OrderRecord>
+// Map.tryFind gives us O(log n) lookup with a safe Option result.
+// In production this would be a SQL query via a repository layer.
+let mockOrderDatabase : Map<string, OrderRecord> =
+    Map.ofList [
+        "SKY-2026-001",
+            { OrderNumber = "SKY-2026-001"; AircraftModel = "A320"; Manufacturer = "Airbus"
+              Destination = "Changi Airport, Singapore"; Status = InTransit
+              EstimatedDate = "June 15, 2026"; OrderDate = "May 10, 2026" }
+        "SKY-2026-002",
+            { OrderNumber = "SKY-2026-002"; AircraftModel = "737 MAX 8"; Manufacturer = "Boeing"
+              Destination = "Heathrow Airport, UK"; Status = InProduction
+              EstimatedDate = "August 20, 2026"; OrderDate = "May 9, 2026" }
+        "SKY-2026-003",
+            { OrderNumber = "SKY-2026-003"; AircraftModel = "A380"; Manufacturer = "Airbus"
+              Destination = "Dubai International, UAE"; Status = Delivered
+              EstimatedDate = "May 1, 2026"; OrderDate = "January 5, 2026" }
+        "SKY-2026-004",
+            { OrderNumber = "SKY-2026-004"; AircraftModel = "777-9"; Manufacturer = "Boeing"
+              Destination = "JFK Airport, USA"; Status = ReadyForDelivery
+              EstimatedDate = "May 25, 2026"; OrderDate = "March 12, 2026" }
+        "SKY-2026-005",
+            { OrderNumber = "SKY-2026-005"; AircraftModel = "C919"; Manufacturer = "COMAC"
+              Destination = "Beijing Capital Airport, China"; Status = OrderConfirmed
+              EstimatedDate = "December 1, 2026"; OrderDate = "May 10, 2026" }
+    ]
