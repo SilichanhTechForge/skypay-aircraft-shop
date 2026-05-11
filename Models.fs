@@ -210,3 +210,99 @@ type CartItem = {
     PriceUsd     : decimal
     ImageUrl     : string
 }
+
+// ==========================================
+// USER AUTHENTICATION (SQLite)
+// ==========================================
+open System.Security.Cryptography
+open System.Text
+
+// User record — stored in the SQLite users table
+type User = {
+    Id           : int
+    Username     : string
+    Email        : string
+    PasswordHash : string
+    CreatedAt    : string
+}
+
+// Database module encapsulates all SQLite operations.
+// Uses Microsoft.Data.Sqlite — the official lightweight .NET SQLite driver.
+module Database =
+    open Microsoft.Data.Sqlite
+
+    let private connStr = "Data Source=skypay.db"
+
+    // SHA-256 password hashing — zero runtime overhead, no extra package needed.
+    // hashPassword : string -> string (hex)
+    let hashPassword (password: string) =
+        use sha = SHA256.Create()
+        sha.ComputeHash(Encoding.UTF8.GetBytes(password))
+        |> Convert.ToHexString
+        |> fun s -> s.ToLower()
+
+    // Creates the users table on first run (idempotent).
+    let initDb () =
+        use conn = new SqliteConnection(connStr)
+        conn.Open()
+        let cmd = conn.CreateCommand()
+        cmd.CommandText <-
+            """CREATE TABLE IF NOT EXISTS users (
+                id            INTEGER PRIMARY KEY AUTOINCREMENT,
+                username      TEXT    NOT NULL UNIQUE,
+                email         TEXT    NOT NULL UNIQUE,
+                password_hash TEXT    NOT NULL,
+                created_at    TEXT    NOT NULL
+            )"""
+        cmd.ExecuteNonQuery() |> ignore
+
+    let private readUser (r: SqliteDataReader) =
+        { Id = r.GetInt32(0); Username = r.GetString(1); Email = r.GetString(2)
+          PasswordHash = r.GetString(3); CreatedAt = r.GetString(4) }
+
+    let findByUsername (username: string) : User option =
+        use conn = new SqliteConnection(connStr)
+        conn.Open()
+        let cmd = conn.CreateCommand()
+        cmd.CommandText <- "SELECT id,username,email,password_hash,created_at FROM users WHERE username=@u LIMIT 1"
+        cmd.Parameters.AddWithValue("@u", username) |> ignore
+        use r = cmd.ExecuteReader()
+        if r.Read() then Some (readUser r) else None
+
+    let findByEmail (email: string) : User option =
+        use conn = new SqliteConnection(connStr)
+        conn.Open()
+        let cmd = conn.CreateCommand()
+        cmd.CommandText <- "SELECT id,username,email,password_hash,created_at FROM users WHERE email=@e LIMIT 1"
+        cmd.Parameters.AddWithValue("@e", email) |> ignore
+        use r = cmd.ExecuteReader()
+        if r.Read() then Some (readUser r) else None
+
+    // Registers a new user. Returns Ok(User) or Error(reason).
+    let registerUser (username: string) (email: string) (password: string) : Result<User, string> =
+        match findByUsername username with
+        | Some _ -> Error "Username already taken."
+        | None ->
+        match findByEmail email with
+        | Some _ -> Error "Email already registered."
+        | None ->
+        try
+            use conn = new SqliteConnection(connStr)
+            conn.Open()
+            let cmd = conn.CreateCommand()
+            cmd.CommandText <- "INSERT INTO users (username,email,password_hash,created_at) VALUES (@u,@e,@p,@d)"
+            let hash = hashPassword password
+            let now  = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")
+            cmd.Parameters.AddWithValue("@u", username) |> ignore
+            cmd.Parameters.AddWithValue("@e", email)    |> ignore
+            cmd.Parameters.AddWithValue("@p", hash)     |> ignore
+            cmd.Parameters.AddWithValue("@d", now)      |> ignore
+            cmd.ExecuteNonQuery() |> ignore
+            Ok { Id = 0; Username = username; Email = email; PasswordHash = hash; CreatedAt = now }
+        with ex -> Error ex.Message
+
+    // Returns Some(User) if credentials are valid, None otherwise.
+    let validateLogin (username: string) (password: string) : User option =
+        match findByUsername username with
+        | Some u when u.PasswordHash = hashPassword password -> Some u
+        | _ -> None

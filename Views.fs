@@ -11,601 +11,93 @@ open System
 open Giraffe.ViewEngine
 open Skypay.Models
 
-// I decided to use a "Neo-Brutalism" / Cartoon style for the UI.
-// This use thick black borders (3px) and hard shadows to make it pop.
-// I picked bright colors like yellow and pink to make it fun, not like a boring corporate site.
+// Professional Aviation B2B portal design.
+// Palette: deep navy (#0f2044), gold (#c4a55a), clean white, slate grays.
+// Typography: Inter (Google Fonts). No cartoon borders or Comic Sans.
 let css = """
 :root {
-    --bg-color: #fffbeb;     /* Cream */
-    --card-bg: #ffffff;
-    --text-main: #000000;
-    --border-color: #000000;
-    --primary: #fbbf24;      /* Amber/Yellow */
-    --secondary: #f472b6;    /* Pink */
-    --accent: #3b82f6;       /* Blue */
-    --border-width: 3px;
-    --shadow-offset: 4px;
-}
-
-body {
-    font-family: 'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', 'Inter', sans-serif;
-    color: var(--text-main);
-    background-color: var(--bg-color);
-    background-image: radial-gradient(#000 1px, transparent 1px);
-    background-size: 20px 20px;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-
-h1, h2, h3 {
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-top: 0;
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    flex: 1;
-}
-
-/* Navbar */
-.navbar {
-    background-color: white;
-    border-bottom: var(--border-width) solid black;
-    padding: 15px 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    box-shadow: 0px 4px 0px 0px rgba(0,0,0,1);
-}
-
-.nav-brand {
-    font-size: 1.8rem;
-    font-weight: 900;
-    color: var(--primary);
-    text-shadow: 2px 2px 0px black;
-    text-decoration: none;
-    letter-spacing: 2px;
-}
-
-.nav-links a {
-    color: black;
-    text-decoration: none;
-    font-weight: bold;
-    margin-left: 20px;
-    padding: 8px 16px;
-    border: 2px solid transparent;
-    border-radius: 8px;
-    transition: all 0.2s;
-}
-
-.nav-links a:hover {
-    background-color: var(--primary);
-    border: 2px solid black;
-    box-shadow: 2px 2px 0px 0px black;
-    transform: translateY(-2px);
-}
-
-/* Header */
-.header {
-    background-color: var(--primary);
-    border: var(--border-width) solid black;
-    box-shadow: var(--shadow-offset) var(--shadow-offset) 0px 0px black;
-    padding: 30px;
-    border-radius: 12px;
-    margin-bottom: 40px;
-    margin-top: 20px;
-    text-align: center;
-}
-
-.header h1 {
-    font-size: 3rem;
-    color: black;
-    text-shadow: 2px 2px 0px white;
-    margin-bottom: 10px;
-}
-
-/* Grid & Cards */
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 30px;
-}
-
-.card {
-    background-color: var(--card-bg);
-    border: var(--border-width) solid black;
-    border-radius: 12px;
-    box-shadow: var(--shadow-offset) var(--shadow-offset) 0px 0px black;
-    overflow: hidden;
-    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s;
-    display: flex;
-    flex-direction: column;
-}
-
-.card:hover {
-    transform: translate(-4px, -4px) rotate(-1deg);
-    box-shadow: 8px 8px 0px 0px black;
-}
-
-.card-img-placeholder {
-    height: 200px; 
-    background-color: #334155; 
-    background-size: cover; 
-    background-position: center;
-    border-bottom: var(--border-width) solid black;
-}
-
-.card-content {
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-}
-
-.card-title {
-    font-size: 1.5rem;
-    margin-bottom: 5px;
-    color: black;
-}
-
-.card-subtitle {
-    font-size: 1.3rem;
-    font-weight: 900;
-    color: var(--accent);
-    margin-bottom: 15px;
-}
-
-.card-desc {
-    font-size: 0.95rem;
-    line-height: 1.5;
-    margin-bottom: 20px;
-    flex: 1;
-}
-
-/* Manufacturer Tags */
-.tag {
-    display: inline-block;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: bold;
-    border: 2px solid black;
-    margin-bottom: 15px;
-    box-shadow: 2px 2px 0px 0px black;
-}
-
-.tag.Airbus { background-color: #93c5fd; }
-.tag.Boeing { background-color: #86efac; }
-.tag.Embraer { background-color: #fde047; }
-.tag.Bombardier { background-color: #fca5a5; }
-.tag.COMAC { background-color: #d8b4fe; }
-
-/* Buttons */
-.btn {
-    display: inline-block;
-    background-color: var(--secondary);
-    color: black;
-    text-decoration: none;
-    padding: 12px 24px;
-    font-weight: 900;
-    text-transform: uppercase;
-    border: var(--border-width) solid black;
-    border-radius: 8px;
-    box-shadow: 4px 4px 0px 0px black;
-    cursor: pointer;
-    transition: all 0.15s;
-    text-align: center;
-}
-
-.btn:hover {
-    background-color: #fbcfe8;
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0px 0px black;
-}
-
-.btn:active {
-    transform: translate(2px, 2px);
-    box-shadow: 1px 1px 0px 0px black;
-}
-
-/* Forms */
-input, select {
-    border: var(--border-width) solid black !important;
-    box-shadow: 3px 3px 0px 0px black !important;
-    font-family: inherit;
-    transition: transform 0.1s;
-}
-
-input:focus, select:focus {
-    outline: none;
-    background-color: #e0f2fe;
-    transform: translate(-1px, -1px);
-    box-shadow: 4px 4px 0px 0px black !important;
-}
-
-/* Chart Container */
-.chart-container {
-    background-color: white;
-    border: var(--border-width) solid black;
-    box-shadow: var(--shadow-offset) var(--shadow-offset) 0px 0px black;
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 40px;
-}
-
-/* Checkout Page Styles */
-.payment-container {
-    max-width: 600px;
-    margin: 50px auto;
-    padding: 40px;
-    background: white;
-    border: var(--border-width) solid black;
-    box-shadow: 10px 10px 0px 0px black;
-    border-radius: 15px;
-}
-
-.form-group { margin-bottom: 25px; position: relative; }
-.form-label { display: block; margin-bottom: 8px; font-weight: 900; font-size: 1.1rem; }
-.form-input {
-    width: 100%;
-    padding: 14px 14px 14px 40px;
-    border-radius: 8px;
-    font-size: 16px;
-    border: var(--border-width) solid black;
-    box-sizing: border-box;
-}
-
-.input-icon {
-    position: absolute;
-    left: 14px;
-    top: 42px;
-    font-size: 1.2rem;
-    color: #64748b;
-}
-
-.card-logos { display: flex; gap: 15px; margin-top: 10px; }
-.card-logo {
-    border: 2px solid #000;
-    border-radius: 8px;
-    padding: 10px 20px;
-    cursor: pointer;
-    font-weight: 900;
-    transition: all 0.2s;
-    background-color: white;
-}
-.card-logo:hover {
-    transform: translateY(-2px);
-    box-shadow: 2px 2px 0px 0px black;
-}
-.card-logo.selected {
-    border: var(--border-width) solid black;
-    background-color: var(--primary);
-    box-shadow: 4px 4px 0px 0px black;
-    transform: translateY(-2px);
-}
-
-/* Empty State */
-.empty-state {
-    text-align: center;
-    padding: 50px 20px;
-    background-color: white;
-    border: var(--border-width) solid black;
-    border-radius: 12px;
-    box-shadow: 6px 6px 0px 0px black;
-    margin: 40px 0;
-}
-.empty-state h2 { font-size: 2.5rem; margin-bottom: 10px; }
-.empty-state p { font-size: 1.2rem; color: #64748b; margin-bottom: 25px; }
-.empty-state .emoji { font-size: 5rem; margin-bottom: 20px; }
-
-/* Footer */
-.footer {
-    background-color: #1e293b;
-    color: white;
-    text-align: center;
-    padding: 30px;
-    border-top: var(--border-width) solid black;
-    margin-top: 60px;
-}
-.footer p { margin: 5px 0; font-weight: bold; }
-.footer-links a { color: var(--primary); text-decoration: none; margin: 0 10px; font-weight: bold; }
-.footer-links a:hover { text-decoration: underline; }
-
-/* ===== ORDER TRACKING PAGE ===== */
-.track-container {
-    max-width: 700px;
-    margin: 40px auto;
-    padding: 40px;
-    background: white;
-    border: var(--border-width) solid black;
-    box-shadow: 10px 10px 0px 0px black;
-    border-radius: 15px;
-}
-.pipeline {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin: 35px 0;
-    position: relative;
-}
-.pipeline::before {
-    content: '';
-    position: absolute;
-    top: 23px;
-    left: 30px;
-    right: 30px;
-    height: 4px;
-    background: #e2e8f0;
-    z-index: 0;
-}
-.pipeline-step {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    z-index: 1;
-    flex: 1;
-}
-.step-circle {
-    width: 46px;
-    height: 46px;
-    border-radius: 50%;
-    border: 3px solid black;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.1rem;
-    font-weight: 900;
-    box-shadow: 3px 3px 0px 0px black;
-    background: #e2e8f0;
-}
-.step-done .step-circle  { background: #86efac; }
-.step-active .step-circle { background: var(--primary); animation: stepPulse 1.5s infinite; }
-.step-pending .step-circle { background: #f1f5f9; color: #94a3b8; }
-@keyframes stepPulse {
-    0%, 100% { box-shadow: 3px 3px 0px 0px black; }
-    50%       { box-shadow: 5px 5px 0px 0px black, 0 0 0 6px rgba(251,191,36,0.25); }
-}
-.step-label {
-    font-size: 0.68rem;
-    font-weight: 900;
-    text-align: center;
-    text-transform: uppercase;
-    max-width: 75px;
-    line-height: 1.3;
-}
-.step-done .step-label    { color: #16a34a; }
-.step-active .step-label  { color: #d97706; }
-.step-pending .step-label { color: #94a3b8; }
-.order-info-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-top: 25px;
-}
-.order-info-cell {
-    background: #f8fafc;
-    border: 2px solid black;
-    border-radius: 8px;
-    padding: 12px 16px;
-    box-shadow: 2px 2px 0px black;
-}
-.order-info-cell .oi-label {
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: #64748b;
-    text-transform: uppercase;
-    box-shadow: 6px 6px 0px 0px black;
-}
-
-.btn:active {
-    transform: translate(2px, 2px);
-    box-shadow: 1px 1px 0px 0px black;
-}
-
-/* Forms */
-input, select {
-    border: var(--border-width) solid black !important;
-    box-shadow: 3px 3px 0px 0px black !important;
-    font-family: inherit;
-    transition: transform 0.1s;
-}
-
-input:focus, select:focus {
-    outline: none;
-    background-color: #e0f2fe;
-    transform: translate(-1px, -1px);
-    box-shadow: 4px 4px 0px 0px black !important;
-}
-
-/* Chart Container */
-.chart-container {
-    background-color: white;
-    border: var(--border-width) solid black;
-    box-shadow: var(--shadow-offset) var(--shadow-offset) 0px 0px black;
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 40px;
-}
-
-/* Checkout Page Styles */
-.payment-container {
-    max-width: 600px;
-    margin: 50px auto;
-    padding: 40px;
-    background: white;
-    border: var(--border-width) solid black;
-    box-shadow: 10px 10px 0px 0px black;
-    border-radius: 15px;
-}
-
-.form-group { margin-bottom: 25px; position: relative; }
-.form-label { display: block; margin-bottom: 8px; font-weight: 900; font-size: 1.1rem; }
-.form-input {
-    width: 100%;
-    padding: 14px 14px 14px 40px;
-    border-radius: 8px;
-    font-size: 16px;
-    border: var(--border-width) solid black;
-    box-sizing: border-box;
-}
-
-.input-icon {
-    position: absolute;
-    left: 14px;
-    top: 42px;
-    font-size: 1.2rem;
-    color: #64748b;
-}
-
-.card-logos { display: flex; gap: 15px; margin-top: 10px; }
-.card-logo {
-    border: 2px solid #000;
-    border-radius: 8px;
-    padding: 10px 20px;
-    cursor: pointer;
-    font-weight: 900;
-    transition: all 0.2s;
-    background-color: white;
-}
-.card-logo:hover {
-    transform: translateY(-2px);
-    box-shadow: 2px 2px 0px 0px black;
-}
-.card-logo.selected {
-    border: var(--border-width) solid black;
-    background-color: var(--primary);
-    box-shadow: 4px 4px 0px 0px black;
-    transform: translateY(-2px);
-}
-
-/* Empty State */
-.empty-state {
-    text-align: center;
-    padding: 50px 20px;
-    background-color: white;
-    border: var(--border-width) solid black;
-    border-radius: 12px;
-    box-shadow: 6px 6px 0px 0px black;
-    margin: 40px 0;
-}
-.empty-state h2 { font-size: 2.5rem; margin-bottom: 10px; }
-.empty-state p { font-size: 1.2rem; color: #64748b; margin-bottom: 25px; }
-.empty-state .emoji { font-size: 5rem; margin-bottom: 20px; }
-
-/* Footer */
-.footer {
-    background-color: #1e293b;
-    color: white;
-    text-align: center;
-    padding: 30px;
-    border-top: var(--border-width) solid black;
-    margin-top: 60px;
-}
-.footer p { margin: 5px 0; font-weight: bold; }
-.footer-links a { color: var(--primary); text-decoration: none; margin: 0 10px; font-weight: bold; }
-.footer-links a:hover { text-decoration: underline; }
-
-/* ===== ORDER TRACKING PAGE ===== */
-.track-container {
-    max-width: 700px;
-    margin: 40px auto;
-    padding: 40px;
-    background: white;
-    border: var(--border-width) solid black;
-    box-shadow: 10px 10px 0px 0px black;
-    border-radius: 15px;
-}
-.pipeline {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin: 35px 0;
-    position: relative;
-}
-.pipeline::before {
-    content: '';
-    position: absolute;
-    top: 23px;
-    left: 30px;
-    right: 30px;
-    height: 4px;
-    background: #e2e8f0;
-    z-index: 0;
-}
-.pipeline-step {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    z-index: 1;
-    flex: 1;
-}
-.step-circle {
-    width: 46px;
-    height: 46px;
-    border-radius: 50%;
-    border: 3px solid black;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.1rem;
-    font-weight: 900;
-    box-shadow: 3px 3px 0px 0px black;
-    background: #e2e8f0;
-}
-.step-done .step-circle  { background: #86efac; }
-.step-active .step-circle { background: var(--primary); animation: stepPulse 1.5s infinite; }
-.step-pending .step-circle { background: #f1f5f9; color: #94a3b8; }
-@keyframes stepPulse {
-    0%, 100% { box-shadow: 3px 3px 0px 0px black; }
-    50%       { box-shadow: 5px 5px 0px 0px black, 0 0 0 6px rgba(251,191,36,0.25); }
-}
-.step-label {
-    font-size: 0.68rem;
-    font-weight: 900;
-    text-align: center;
-    text-transform: uppercase;
-    max-width: 75px;
-    line-height: 1.3;
-}
-.step-done .step-label    { color: #16a34a; }
-.step-active .step-label  { color: #d97706; }
-.step-pending .step-label { color: #94a3b8; }
-.order-info-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-top: 25px;
-}
-.order-info-cell {
-    background: #f8fafc;
-    border: 2px solid black;
-    border-radius: 8px;
-    padding: 12px 16px;
-    box-shadow: 2px 2px 0px black;
-}
-.order-info-cell .oi-label {
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: #64748b;
-    text-transform: uppercase;
-    margin-bottom: 4px;
-}
-.order-info-cell .oi-value { font-size: 1rem; font-weight: 900; }
+    --navy:       #0f2044;
+    --navy-mid:   #1e3a5f;
+    --gold:       #c4a55a;
+    --gold-light: #f0e0b0;
+    --bg:         #f0f4f8;
+    --card:       #ffffff;
+    --text:       #1e293b;
+    --muted:      #64748b;
+    --border:     #e2e8f0;
+    --radius:     10px;
+    --radius-lg:  16px;
+    --shadow:     0 2px 12px rgba(15,32,68,0.09);
+    --shadow-lg:  0 8px 32px rgba(15,32,68,0.15);
+}
+*, *::before, *::after { box-sizing: border-box; }
+body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; color: var(--text); background: var(--bg); margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; font-size: 15px; line-height: 1.6; }
+h1, h2, h3 { font-weight: 700; letter-spacing: -0.02em; margin-top: 0; color: var(--navy); }
+.navbar { background: var(--navy); padding: 0 40px; display: flex; justify-content: space-between; align-items: center; height: 64px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.25); }
+.nav-brand { font-size: 1.35rem; font-weight: 800; color: var(--gold); text-decoration: none; letter-spacing: 4px; text-transform: uppercase; }
+.nav-links { display: flex; align-items: center; gap: 4px; }
+.nav-links a { color: rgba(255,255,255,0.78); text-decoration: none; font-weight: 500; font-size: 0.875rem; padding: 8px 14px; border-radius: 6px; transition: all 0.15s; }
+.nav-links a:hover { background: rgba(255,255,255,0.10); color: white; }
+.nav-user { color: var(--gold); font-weight: 600; font-size: 0.875rem; padding: 6px 14px; border: 1px solid var(--gold); border-radius: 20px; }
+.nav-badge { background: var(--gold); color: var(--navy); font-size: 0.7rem; font-weight: 700; border-radius: 10px; padding: 1px 7px; margin-left: 5px; }
+.container { max-width: 1200px; margin: 0 auto; padding: 32px 24px; flex: 1; }
+.header { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%); color: white; padding: 48px 40px; border-radius: var(--radius-lg); margin-bottom: 40px; }
+.header h1 { font-size: 2.25rem; font-weight: 800; color: white; margin-bottom: 8px; letter-spacing: -0.03em; }
+.header p { color: rgba(255,255,255,0.68); margin: 0; font-size: 1rem; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
+.card { background: var(--card); border-radius: var(--radius-lg); box-shadow: var(--shadow); overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; border: 1px solid var(--border); }
+.card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+.card-img-placeholder { height: 200px; background-color: var(--navy); background-size: cover; background-position: center; }
+.card-content { padding: 20px 24px 24px; display: flex; flex-direction: column; flex: 1; }
+.card-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; color: var(--navy); }
+.card-subtitle { font-size: 1.2rem; font-weight: 700; color: var(--gold); margin-bottom: 12px; }
+.card-desc { font-size: 0.875rem; color: var(--muted); line-height: 1.6; margin-bottom: 16px; flex: 1; }
+.tag { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; margin-bottom: 14px; letter-spacing: 0.04em; text-transform: uppercase; }
+.tag.Airbus { background: #dbeafe; color: #1e40af; }
+.tag.Boeing { background: #dcfce7; color: #166534; }
+.tag.Embraer { background: #fef9c3; color: #854d0e; }
+.tag.Bombardier { background: #fee2e2; color: #991b1b; }
+.tag.COMAC { background: #f3e8ff; color: #6b21a8; }
+.btn { display: inline-block; background: var(--navy); color: white; text-decoration: none; padding: 10px 20px; font-weight: 600; font-size: 0.875rem; border: none; border-radius: 8px; cursor: pointer; transition: all 0.15s; text-align: center; letter-spacing: 0.02em; font-family: 'Inter', sans-serif; }
+.btn:hover { background: var(--navy-mid); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(15,32,68,0.25); }
+.btn:active { transform: translateY(0); box-shadow: none; }
+input, select { font-family: 'Inter', sans-serif; font-size: 0.9375rem; border: 1.5px solid var(--border) !important; border-radius: 8px; background: white; transition: border-color 0.15s, box-shadow 0.15s; box-shadow: none !important; }
+input:focus, select:focus { outline: none; border-color: var(--navy) !important; box-shadow: 0 0 0 3px rgba(15,32,68,0.10) !important; }
+.chart-container { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 36px; box-shadow: var(--shadow); }
+.payment-container { max-width: 580px; margin: 40px auto; padding: 40px; background: var(--card); border: 1px solid var(--border); box-shadow: var(--shadow-lg); border-radius: var(--radius-lg); }
+.form-group { margin-bottom: 22px; position: relative; }
+.form-label { display: block; margin-bottom: 7px; font-weight: 600; font-size: 0.875rem; color: var(--text); }
+.form-input { width: 100%; padding: 11px 14px; border-radius: 8px; font-size: 0.9375rem; border: 1.5px solid var(--border); box-sizing: border-box; font-family: 'Inter', sans-serif; transition: border-color 0.15s, box-shadow 0.15s; }
+.form-input:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rgba(15,32,68,0.10); }
+.card-logos { display: flex; gap: 10px; margin-top: 8px; }
+.card-logo { border: 1.5px solid var(--border); border-radius: 8px; padding: 8px 18px; cursor: pointer; font-weight: 600; font-size: 0.875rem; transition: all 0.15s; background: white; color: var(--text); }
+.card-logo:hover { border-color: var(--navy); }
+.card-logo.selected { border: 2px solid var(--navy); background: #eff6ff; color: var(--navy); font-weight: 700; }
+.empty-state { text-align: center; padding: 60px 20px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow); margin: 40px 0; }
+.empty-state h2 { color: var(--navy); }
+.empty-state p { color: var(--muted); margin-bottom: 24px; }
+.footer { background: var(--navy); color: rgba(255,255,255,0.60); text-align: center; padding: 32px; margin-top: 60px; font-size: 0.875rem; }
+.footer p { margin: 5px 0; }
+.footer-links a { color: var(--gold); text-decoration: none; margin: 0 10px; font-weight: 500; }
+.track-container { max-width: 700px; margin: 40px auto; padding: 40px; background: var(--card); border: 1px solid var(--border); box-shadow: var(--shadow-lg); border-radius: var(--radius-lg); }
+.pipeline { display: flex; justify-content: space-between; align-items: flex-start; margin: 36px 0; position: relative; }
+.pipeline::before { content: ''; position: absolute; top: 20px; left: 30px; right: 30px; height: 2px; background: var(--border); z-index: 0; }
+.pipeline-step { display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 1; flex: 1; }
+.step-circle { width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; background: white; color: var(--muted); box-shadow: var(--shadow); }
+.step-done .step-circle    { background: #dcfce7; border-color: #16a34a; color: #166534; }
+.step-active .step-circle  { background: var(--gold-light); border-color: var(--gold); color: var(--navy); animation: pulse 2s infinite; }
+.step-pending .step-circle { background: white; border-color: var(--border); color: var(--muted); }
+@keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(196,165,90,0.35); } 50% { box-shadow: 0 0 0 8px rgba(196,165,90,0); } }
+.step-label { font-size: 0.64rem; font-weight: 600; text-align: center; text-transform: uppercase; letter-spacing: 0.04em; max-width: 70px; line-height: 1.3; color: var(--muted); }
+.step-done .step-label   { color: #166534; }
+.step-active .step-label { color: var(--gold); }
+.order-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 24px; }
+.order-info-cell { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; }
+.order-info-cell .oi-label { font-size: 0.7rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+.order-info-cell .oi-value { font-size: 0.9375rem; font-weight: 600; color: var(--navy); }
 """
 
-let layout (title: string) (cartCount: int) (content: XmlNode list) =
+let layout (title: string) (cartCount: int) (username: string option) (content: XmlNode list) =
     html [] [
         head [] [
             meta [ _charset "UTF-8" ]
@@ -621,12 +113,19 @@ let layout (title: string) (cartCount: int) (content: XmlNode list) =
                     a [ _href "/"; _class "nav-brand" ] [ str "SKYPAY" ]
                     div [ _class "nav-links" ] [
                         a [ _href "/" ] [ str "Home" ]
-                        a [ _href "/track" ] [ str "✈️ Track Order" ]
+                        a [ _href "/track" ] [ str "Track Order" ]
                         a [ _href "/cart"; _style "position:relative;" ] [
-                            str "🛒 Cart"
+                            str "Cart"
                             if cartCount > 0 then
                                 span [ _style "position:absolute;top:-8px;right:-10px;background:#f472b6;color:black;border:2px solid black;border-radius:50%;width:20px;height:20px;font-size:0.7rem;font-weight:900;display:flex;align-items:center;justify-content:center;box-shadow:1px 1px 0px black;" ] [ str (string cartCount) ]
                         ]
+                        match username with
+                        | Some name ->
+                            span [ _style "font-weight:600;padding:6px 14px;border:1px solid var(--gold);border-radius:20px;color:var(--gold);" ] [ str name ]
+                            a [ _href "/logout"; _style "color:#dc2626;font-weight:bold;padding:8px 12px;border:2px solid #dc2626;border-radius:8px;margin-left:8px;text-decoration:none;transition:all 0.2s;" ] [ str "Logout" ]
+                        | None ->
+                            a [ _href "/login"    ] [ str "Login" ]
+                            a [ _href "/register"; _style "background:var(--gold);color:var(--navy);border-radius:6px;font-weight:600;" ] [ str "Register" ]
                     ]
                 ]
                 div [ _class "container" ] content
@@ -681,7 +180,7 @@ let chartScriptTemplate = """
     });
 """
 
-let dashboardView (aircrafts: Aircraft list) (topStats: Aircraft list) (searchQuery: string) (brandFilter: string) (cartCount: int) =
+let dashboardView (aircrafts: Aircraft list) (topStats: Aircraft list) (searchQuery: string) (brandFilter: string) (cartCount: int) (username: string option) =
     let searchVal = if isNull searchQuery then "" else searchQuery
     let brandVal = if isNull brandFilter then "" else brandFilter
     let manufacturers = [ "All"; "Airbus"; "Boeing"; "Embraer"; "Bombardier"; "COMAC" ]
@@ -729,7 +228,7 @@ let dashboardView (aircrafts: Aircraft list) (topStats: Aircraft list) (searchQu
             "});"
         ]
 
-    layout "Skypay" cartCount [
+    layout "Skypay" cartCount username [
         div [ _class "header" ] [
             h1 [] [ str "Aircraft Shop" ]
             p [] [ str "Browse our available inventory." ]
@@ -789,7 +288,7 @@ let dashboardView (aircrafts: Aircraft list) (topStats: Aircraft list) (searchQu
 
         if aircrafts.Length = 0 then
             div [ _class "empty-state" ] [
-                div [ _class "emoji" ] [ str "🛩️💨" ]
+                div [ _class "emoji" ] [ str "No results" ]
                 h2 [] [ str "No Aircraft Found!" ]
                 p [] [ str "Looks like we don't have what you're looking for." ]
                 a [ _href "/"; _class "btn" ] [ str "Clear Filters" ]
@@ -817,12 +316,12 @@ let dashboardView (aircrafts: Aircraft list) (topStats: Aircraft list) (searchQu
                             div [ _class "card-subtitle" ] [ str priceText ]
                             p [ _class "card-desc" ] [ str descText ]
                             div [] [
-                                span [ _class (sprintf "tag %s" item.Manufacturer) ] [ str item.Manufacturer ]
+                    span [ _class (sprintf "tag %s" item.Manufacturer) ] [ str item.Manufacturer ]
                             ]
                             div [ _style "display:flex;gap:10px;margin-top:auto;flex-wrap:wrap;" ] [
                                 a [ _href linkUrl; _class "btn"; _style "flex:1;text-align:center;" ] [ str "Buy Now" ]
                                 tag "form" [ attr "action" (sprintf "/cart/add/%s" (item.Id.ToString())); attr "method" "POST"; attr "style" "flex:1;" ] [
-                                    button [ _type "submit"; _class "btn"; _style "width:100%;background:#3b82f6;color:white;" ] [ str "🛒 Add" ]
+                                    button [ _type "submit"; _class "btn"; _style "width:100%;background:#3b82f6;color:white;" ] [ str "Add to Cart" ]
                                 ]
                             ]
                         ]
@@ -833,7 +332,7 @@ let dashboardView (aircrafts: Aircraft list) (topStats: Aircraft list) (searchQu
         script [] [ rawText chartScript ]
     ]
 
-let paymentView (aircraft: Aircraft) (cartCount: int) =
+let paymentView (aircraft: Aircraft) (cartCount: int) (username: string option) =
     let priceInfo = sprintf "$%s" ((aircraft.Price / 1m<USD>).ToString("N0"))
     let actionUrl = sprintf "/process-payment/%O" aircraft.Id
     // Build JS by concatenation to avoid sprintf %% conflicts with % in JS
@@ -883,7 +382,7 @@ let paymentView (aircraft: Aircraft) (cartCount: int) =
         "animStyle.textContent = '@keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }';\n" +
         "document.head.appendChild(animStyle);\n"
 
-    layout "Checkout" cartCount [
+    layout "Checkout" cartCount username [
         div [ _class "payment-container" ] [
             div [ _style "text-align: center; margin-bottom: 30px;" ] [
                 h2 [] [ str "Checkout" ]
@@ -895,43 +394,37 @@ let paymentView (aircraft: Aircraft) (cartCount: int) =
                 div [ _class "form-group" ] [
                     label [ _class "form-label" ] [ str "Payment Method" ]
                     div [ _class "card-logos" ] [
-                        div [ _class "card-logo selected"; attr "onclick" "selectCard(this)" ] [ str "💳 VISA" ]
-                        div [ _class "card-logo"; attr "onclick" "selectCard(this)" ] [ str "💳 MasterCard" ]
+                        div [ _class "card-logo selected"; attr "onclick" "selectCard(this)" ] [ str "VISA" ]
+                        div [ _class "card-logo"; attr "onclick" "selectCard(this)" ] [ str "MasterCard" ]
                     ]
                     input [ _type "hidden"; _name "cardType"; _id "cardType"; _value "VISA" ]
                 ]
                 div [ _class "form-group" ] [
                     label [ _class "form-label"; attr "for" "cardNumber" ] [ str "Card Number" ]
-                    div [ _class "input-icon" ] [ str "💳" ]
                     input [ _type "text"; _name "cardNumber"; _id "cardNumber"; _class "form-input"; _placeholder "0000 0000 0000 0000"; _required ]
                 ]
                 div [ _style "display: grid; grid-template-columns: 1fr 1fr; gap: 20px;" ] [
                     div [ _class "form-group" ] [
                         label [ _class "form-label"; attr "for" "expiry" ] [ str "Expiry Date" ]
-                        div [ _class "input-icon" ] [ str "📅" ]
                         input [ _type "text"; _name "expiry"; _id "expiry"; _class "form-input"; _placeholder "MM/YY"; _required ]
                     ]
                     div [ _class "form-group" ] [
                         label [ _class "form-label"; attr "for" "cvc" ] [ str "CVC" ]
-                        div [ _class "input-icon" ] [ str "🔒" ]
                         input [ _type "text"; _name "cvc"; _id "cvc"; _class "form-input"; _placeholder "123"; _required ]
                     ]
                 ]
                 div [ _class "form-group" ] [
                     label [ _class "form-label"; attr "for" "airport" ] [ str "Delivery Airport Address" ]
-                    div [ _class "input-icon" ] [ str "📍" ]
                     input [ _type "text"; _name "airport"; _id "airport"; _class "form-input"; _placeholder "Full Address of Airport or ICAO Code"; _required ]
                 ]
                 div [ _class "form-group" ] [
-                     label [ _class "form-label"; attr "for" "country" ] [ str "Country (Detailed)" ]
-                     div [ _class "input-icon" ] [ str "🌍" ]
-                     input [ _type "text"; _name "country"; _id "country"; _class "form-input"; _placeholder "Singapore, Cambodia, etc."; _required ]
+                    label [ _class "form-label"; attr "for" "country" ] [ str "Country (Detailed)" ]
+                    input [ _type "text"; _name "country"; _id "country"; _class "form-input"; _placeholder "Singapore, Cambodia, etc."; _required ]
                 ]
 
                 // --- LIVE PROMO CODE VALIDATOR ---
                 div [ _class "form-group" ] [
-                    label [ _class "form-label"; attr "for" "promoCode" ] [ str "🎟️ Promo Code (Optional)" ]
-                    div [ _class "input-icon" ] [ str "🏷️" ]
+                    label [ _class "form-label"; attr "for" "promoCode" ] [ str "Promo Code (Optional)" ]
                     input [
                         _type "text"; _name "promoCode"; _id "promoCode"; _class "form-input"
                         _placeholder "e.g. VIP20 or STAFF50"
@@ -969,24 +462,24 @@ let paymentView (aircraft: Aircraft) (cartCount: int) =
     ]
 
 // Updated to accept finalPrice (after lambda discount) and a discountMsg
-let successView (aircraft: Aircraft) (finalPrice: decimal<USD>) (discountMsg: string) (cartCount: int) =
+let successView (aircraft: Aircraft) (finalPrice: decimal<USD>) (discountMsg: string) (cartCount: int) (username: string option) =
     let originalPriceText = sprintf "$%s USD" ((aircraft.Price / 1m<USD>).ToString("N0"))
     let finalPriceText    = sprintf "$%s USD" ((finalPrice / 1m<USD>).ToString("N0"))
     let hadDiscount       = discountMsg <> "" && finalPrice < aircraft.Price
 
-    layout "Order Placed" cartCount [
+    layout "Order Placed" cartCount username [
         div [ _class "container"; _style "text-align: center; padding-top: 50px;" ] [
-            div [ _style "font-size: 4rem; margin-bottom: 10px;" ] [ str "✅" ]
+            
             h1 [] [ str "Order Confirmed!" ]
             p [ _style "font-size: 1.2rem;" ] [ str (sprintf "We have received your order for the %s." aircraft.Model) ]
 
             // Discount Summary Box (only shows if a promo code was used)
             if hadDiscount then
                 div [ _style "margin: 25px auto; max-width: 400px; background: #fef08a; border: 3px solid black; border-radius: 12px; padding: 20px; box-shadow: 4px 4px 0px black;" ] [
-                    p [ _style "font-weight: 900; font-size: 1.1rem; margin: 0 0 10px 0;" ] [ str (sprintf "🎟️ %s" discountMsg) ]
+                    p [ _style "font-weight: 900; font-size: 1.1rem; margin: 0 0 10px 0;" ] [ str discountMsg ]
                     p [ _style "margin: 5px 0; text-decoration: line-through; color: #64748b;" ] [ str (sprintf "Original Price: %s" originalPriceText) ]
                     p [ _style "margin: 5px 0; font-size: 1.5rem; font-weight: 900; color: #16a34a;" ] [ str (sprintf "You Paid: %s" finalPriceText) ]
-                    p [ _style "margin: 10px 0 0 0; font-size: 0.85rem; color: #475569;" ] [ str (sprintf "You saved: $%s USD 🎉" ((aircraft.Price - finalPrice) / 1m<USD> |> fun x -> x.ToString("N0"))) ]
+                    p [ _style "margin: 10px 0 0 0; font-size: 0.85rem; color: #475569;" ] [ str (sprintf "You saved: $%s USD" ((aircraft.Price - finalPrice) / 1m<USD> |> fun x -> x.ToString("N0"))) ]
                 ]
             else
                 div [ _style "margin: 25px auto; max-width: 400px; background: white; border: 3px solid black; border-radius: 12px; padding: 20px; box-shadow: 4px 4px 0px black;" ] [
@@ -996,7 +489,7 @@ let successView (aircraft: Aircraft) (finalPrice: decimal<USD>) (discountMsg: st
             p [ _style "color: #64748b; margin-top: 15px;" ] [ str "We will contact you shortly about delivery." ]
             // Tracking hint box
             div [ _style "margin: 20px auto; max-width: 420px; background: #eff6ff; border: 3px solid black; border-radius: 12px; padding: 16px 20px; box-shadow: 4px 4px 0px black; text-align:left;" ] [
-                p [ _style "margin:0 0 6px 0; font-weight:900; font-size:1rem;" ] [ str "📦 Track Your Delivery" ]
+                p [ _style "margin:0 0 6px 0; font-weight:900; font-size:1rem;" ] [ str "Track Your Delivery" ]
                 p [ _style "margin:0 0 10px 0; font-size:0.85rem; color:#475569;" ] [ str "Use one of these demo order numbers on the Track page:" ]
                 p [ _style "margin:0; font-size:0.85rem; font-weight:700;" ] [
                     str "SKY-2026-001  •  SKY-2026-002  •  SKY-2026-003"
@@ -1004,7 +497,7 @@ let successView (aircraft: Aircraft) (finalPrice: decimal<USD>) (discountMsg: st
             ]
             div [ _style "margin-top:20px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap;" ] [
                 a [ _href "/"; _class "btn" ] [ str "← Back to Shop" ]
-                a [ _href "/track"; _class "btn"; _style "background:var(--accent);color:white;" ] [ str "✈️ Track Order" ]
+                a [ _href "/track"; _class "btn"; _style "background:var(--accent);color:white;" ] [ str "Track Order" ]
             ]
         ]
     ]
@@ -1014,16 +507,16 @@ let successView (aircraft: Aircraft) (finalPrice: decimal<USD>) (discountMsg: st
 // ==========================================
 // This view uses pattern matching on the DeliveryStatus DU.
 // The compiler guarantees we handle ALL 5 cases — no bugs from missed branches.
-let orderTrackView (query: string) (result: OrderRecord option) (cartCount: int) =
+let orderTrackView (query: string) (result: OrderRecord option) (cartCount: int) (username: string option) =
     let queryDisplay = if isNull query then "" else query.ToUpper()
 
     // The 5 pipeline steps: (icon, label)
     let steps = [
-        ("📋", "Order\nConfirmed")
-        ("🏭", "In\nProduction")
-        ("🔧", "Ready for\nDelivery")
-        ("✈️", "In\nTransit")
-        ("📦", "Delivered")
+        ("1", "Order Confirmed")
+        ("2", "In Production")
+        ("3", "Ready for Delivery")
+        ("4", "In Transit")
+        ("5", "Delivered")
     ]
 
     // Pattern match on DeliveryStatus to get the active step index
@@ -1042,11 +535,11 @@ let orderTrackView (query: string) (result: OrderRecord option) (cartCount: int)
         | Some { Status = s } ->
             let text, color =
                 match s with
-                | OrderConfirmed   -> "✅ Order Confirmed",      "#93c5fd"
-                | InProduction     -> "🏭 In Production",       "#fde047"
-                | ReadyForDelivery -> "🔧 Ready for Delivery",  "#86efac"
-                | InTransit        -> "✈️ In Transit",          "#fbbf24"
-                | Delivered        -> "📦 Delivered",           "#4ade80"
+                | OrderConfirmed   -> "Order Confirmed",      "#93c5fd"
+                | InProduction     -> "In Production",       "#fde047"
+                | ReadyForDelivery -> "Ready for Delivery",  "#86efac"
+                | InTransit        -> "In Transit",          "#fbbf24"
+                | Delivered        -> "Delivered",           "#4ade80"
             [ span [ _style (sprintf "display:inline-block;padding:6px 18px;background:%s;border:2px solid black;border-radius:20px;font-weight:900;box-shadow:2px 2px 0px black;font-size:1rem;" color) ] [ str text ] ]
         | None -> []
 
@@ -1069,7 +562,6 @@ let orderTrackView (query: string) (result: OrderRecord option) (cartCount: int)
         match result with
         | None when queryDisplay <> "" ->
             [ div [ _style "text-align:center;padding:30px;background:#fee2e2;border:3px solid #dc2626;border-radius:12px;box-shadow:4px 4px 0px black;" ] [
-                div [ _style "font-size:3rem;" ] [ str "❌" ]
                 h2 [ _style "color:#dc2626;" ] [ str "Order Not Found" ]
                 p [] [ str (sprintf "No order found matching \"%s\". Please double-check your order number." queryDisplay) ]
               ] ]
@@ -1077,7 +569,7 @@ let orderTrackView (query: string) (result: OrderRecord option) (cartCount: int)
             [
                 div [ _style "text-align:center;margin-bottom:18px;" ] statusBadgeHtml
                 div [ _style "background:var(--primary);border:3px solid black;border-radius:12px;padding:18px 20px;text-align:center;box-shadow:4px 4px 0px black;margin-bottom:25px;" ] [
-                    h2 [ _style "margin:0 0 4px 0;" ] [ str (sprintf "✈️ %s" order.AircraftModel) ]
+                    h2 [ _style "margin:0 0 4px 0;" ] [ str order.AircraftModel ]
                     p  [ _style "margin:0;font-weight:bold;" ] [ str (sprintf "Manufactured by %s" order.Manufacturer) ]
                 ]
                 div [ _class "pipeline" ] (buildPipeline ())
@@ -1091,11 +583,11 @@ let orderTrackView (query: string) (result: OrderRecord option) (cartCount: int)
                         div [ _class "oi-value" ] [ str order.OrderDate ]
                     ]
                     div [ _class "order-info-cell"; _style "grid-column:span 2;" ] [
-                        div [ _class "oi-label" ] [ str "📍 Delivery Destination" ]
+                        div [ _class "oi-label" ] [ str "Delivery Destination" ]
                         div [ _class "oi-value" ] [ str order.Destination ]
                     ]
                     div [ _class "order-info-cell" ] [
-                        div [ _class "oi-label" ] [ str "📅 Est. Delivery" ]
+                        div [ _class "oi-label" ] [ str "Est. Delivery" ]
                         div [ _class "oi-value" ] [ str order.EstimatedDate ]
                     ]
                     div [ _class "order-info-cell" ] [
@@ -1113,7 +605,6 @@ let orderTrackView (query: string) (result: OrderRecord option) (cartCount: int)
     // Static top section — always shown
     let topSection = [
         div [ _style "text-align:center;margin-bottom:28px;" ] [
-            div [ _style "font-size:3rem;margin-bottom:8px;" ] [ str "📦" ]
             h1 [] [ str "Track Your Order" ]
             p [ _style "color:#64748b;" ] [ str "Enter your Skypay order number to check your aircraft delivery status." ]
         ]
@@ -1124,7 +615,7 @@ let orderTrackView (query: string) (result: OrderRecord option) (cartCount: int)
                 _value queryDisplay
                 _style "flex:1;padding:12px 16px;border-radius:8px;font-size:16px;text-transform:uppercase;"
             ]
-            button [ _type "submit"; _class "btn"; _style "white-space:nowrap;" ] [ str "🔍 Track" ]
+            button [ _type "submit"; _class "btn"; _style "white-space:nowrap;" ] [ str "Search" ]
         ]
         p [ _style "font-size:0.82rem;color:#64748b;margin-bottom:22px;" ] [
             str "Demo orders: "
@@ -1136,7 +627,7 @@ let orderTrackView (query: string) (result: OrderRecord option) (cartCount: int)
         ]
     ]
 
-    layout "Track Your Order | Skypay" cartCount [
+    layout "Track Your Order | Skypay" cartCount username [
         div [ _class "track-container" ] (topSection @ resultSection)
     ]
 
@@ -1145,7 +636,7 @@ let orderTrackView (query: string) (result: OrderRecord option) (cartCount: int)
 // ==========================================
 // Shows all items in the session cart, a live currency converter,
 // a running total, and individual checkout links.
-let cartView (items: CartItem list) (cartCount: int) =
+let cartView (items: CartItem list) (cartCount: int) (username: string option) =
     // Compute total in USD (using F# Units of Measure)
     let totalUsd = items |> List.sumBy (fun i -> i.PriceUsd)
 
@@ -1165,12 +656,11 @@ let cartView (items: CartItem list) (cartCount: int) =
         "  });\n" +
         "}\n"
 
-    layout "Shopping Cart | Skypay" cartCount [
+    layout "Shopping Cart | Skypay" cartCount username [
         div [ _class "track-container"; _style "max-width:800px;" ] [
 
             // ---- Header ----
             div [ _style "text-align:center;margin-bottom:28px;" ] [
-                div [ _style "font-size:3rem;margin-bottom:8px;" ] [ str "🛒" ]
                 h1 [] [ str "Your Cart" ]
                 p [ _style "color:#64748b;" ] [
                     str (sprintf "%d item(s) selected" items.Length)
@@ -1180,9 +670,9 @@ let cartView (items: CartItem list) (cartCount: int) =
             // ---- Currency Switcher ----
             // Uses convertFromUsd (partial application) — rates injected from F# into JS
             div [ _style "margin-bottom:24px;background:#f0fdf4;border:3px solid black;border-radius:12px;padding:16px 20px;box-shadow:4px 4px 0px black;" ] [
-                p [ _style "margin:0 0 10px 0;font-weight:900;font-size:0.95rem;" ] [ str "💱 Currency Converter (powered by F# Units of Measure)" ]
+                p [ _style "margin:0 0 10px 0;font-weight:900;font-size:0.95rem;" ] [ str "Currency Converter (F# Units of Measure)" ]
                 div [ _style "display:flex;gap:10px;flex-wrap:wrap;" ] [
-                    for (code, flag) in [("USD","🇺🇸");("EUR","🇪🇺");("SGD","🇸🇬");("GBP","🇬🇧")] do
+                    for (code, flag) in [("USD","$");("EUR","€");("SGD","S$");("GBP","£")] do
                         button [
                             _class "btn cur-btn"
                             attr "data-cur" code
@@ -1195,7 +685,7 @@ let cartView (items: CartItem list) (cartCount: int) =
             // ---- Empty State ----
             if items.IsEmpty then
                 div [ _class "empty-state" ] [
-                    div [ _class "emoji" ] [ str "🛒💨" ]
+                    div [ _class "emoji" ] [ str "Empty" ]
                     h2 [] [ str "Your cart is empty!" ]
                     p [] [ str "Browse our inventory and add some aircraft." ]
                     a [ _href "/"; _class "btn" ] [ str "← Browse Aircraft" ]
@@ -1219,7 +709,7 @@ let cartView (items: CartItem list) (cartCount: int) =
                             ]
                             div [ _style "display:flex;flex-direction:column;gap:8px;" ] [
                                 a [ _href (sprintf "/checkout/%s" item.AircraftId); _class "btn"; _style "font-size:0.8rem;padding:8px 14px;text-align:center;" ] [ str "Buy Now" ]
-                                a [ _href (sprintf "/cart/remove/%s" item.AircraftId); _style "font-size:0.8rem;padding:8px 14px;text-align:center;background:#fee2e2;border:2px solid #dc2626;border-radius:8px;font-weight:900;color:#dc2626;text-decoration:none;box-shadow:2px 2px 0px black;" ] [ str "✕ Remove" ]
+                                a [ _href (sprintf "/cart/remove/%s" item.AircraftId); _style "font-size:0.8rem;padding:8px 14px;text-align:center;background:#fee2e2;border:2px solid #dc2626;border-radius:8px;font-weight:900;color:#dc2626;text-decoration:none;box-shadow:2px 2px 0px black;" ] [ str "Remove" ]
                             ]
                         ]
                     )
@@ -1236,10 +726,82 @@ let cartView (items: CartItem list) (cartCount: int) =
                     ]
                     div [ _style "display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" ] [
                         a [ _href "/"; _class "btn"; _style "background:white;" ] [ str "← Continue Shopping" ]
-                        a [ _href "/cart/clear"; _style "padding:12px 24px;background:#fee2e2;border:3px solid #dc2626;border-radius:8px;font-weight:900;color:#dc2626;text-decoration:none;box-shadow:4px 4px 0px black;" ] [ str "🗑 Clear Cart" ]
+                        a [ _href "/cart/clear"; _style "padding:12px 24px;background:#fee2e2;border:3px solid #dc2626;border-radius:8px;font-weight:900;color:#dc2626;text-decoration:none;box-shadow:4px 4px 0px black;" ] [ str "Clear Cart" ]
                     ]
                 ]
 
             script [] [ rawText ratesJs ]
+        ]
+    ]
+
+// ==========================================
+// LOGIN VIEW
+// ==========================================
+let loginView (errorMsg: string option) =
+    layout "Login | Skypay" 0 None [
+        div [ _class "payment-container"; _style "margin-top:60px;" ] [
+            div [ _style "text-align:center;margin-bottom:28px;" ] [
+                h1 [ _style "margin:8px 0 4px;" ] [ str "Welcome Back" ]
+                p [ _style "color:#64748b;margin:0;" ] [ str "Log in to your Skypay account" ]
+            ]
+            match errorMsg with
+            | Some msg ->
+                div [ _style "padding:12px 16px;background:#fee2e2;border:2px solid #dc2626;border-radius:8px;box-shadow:2px 2px 0px black;margin-bottom:20px;font-weight:700;color:#dc2626;" ] [
+                    str msg
+                ]
+            | None -> ()
+            tag "form" [ attr "action" "/login"; attr "method" "POST" ] [
+                div [ _class "form-group" ] [
+                    label [ _class "form-label"; attr "for" "username" ] [ str "Username" ]
+                    input [ _type "text"; _name "username"; _id "username"; _class "form-input"; _placeholder "Your username"; _required ]
+                ]
+                div [ _class "form-group" ] [
+                    label [ _class "form-label"; attr "for" "password" ] [ str "Password" ]
+                    input [ _type "password"; _name "password"; _id "password"; _class "form-input"; _placeholder "Your password"; _required ]
+                ]
+                button [ _type "submit"; _class "btn"; _style "width:100%;margin-top:8px;" ] [ str "Log In" ]
+            ]
+            p [ _style "text-align:center;margin-top:20px;color:#64748b;" ] [
+                str "No account yet? "
+                a [ _href "/register"; _style "font-weight:900;color:var(--accent);" ] [ str "Register here" ]
+            ]
+        ]
+    ]
+
+// ==========================================
+// REGISTER VIEW
+// ==========================================
+let registerView (errorMsg: string option) =
+    layout "Register | Skypay" 0 None [
+        div [ _class "payment-container"; _style "margin-top:60px;" ] [
+            div [ _style "text-align:center;margin-bottom:28px;" ] [
+                h1 [ _style "margin:8px 0 4px;" ] [ str "Create Account" ]
+                p [ _style "color:#64748b;margin:0;" ] [ str "Join Skypay and start buying aircraft" ]
+            ]
+            match errorMsg with
+            | Some msg ->
+                div [ _style "padding:12px 16px;background:#fee2e2;border:2px solid #dc2626;border-radius:8px;box-shadow:2px 2px 0px black;margin-bottom:20px;font-weight:700;color:#dc2626;" ] [
+                    str msg
+                ]
+            | None -> ()
+            tag "form" [ attr "action" "/register"; attr "method" "POST" ] [
+                div [ _class "form-group" ] [
+                    label [ _class "form-label"; attr "for" "username" ] [ str "Username" ]
+                    input [ _type "text"; _name "username"; _id "username"; _class "form-input"; _placeholder "min. 3 characters"; _required ]
+                ]
+                div [ _class "form-group" ] [
+                    label [ _class "form-label"; attr "for" "email" ] [ str "Email Address" ]
+                    input [ _type "email"; _name "email"; _id "email"; _class "form-input"; _placeholder "you@gmail.com"; _required ]
+                ]
+                div [ _class "form-group" ] [
+                    label [ _class "form-label"; attr "for" "password" ] [ str "Password" ]
+                    input [ _type "password"; _name "password"; _id "password"; _class "form-input"; _placeholder "min. 6 characters"; _required ]
+                ]
+                button [ _type "submit"; _class "btn"; _style "width:100%;margin-top:8px;background:#3b82f6;color:white;" ] [ str "Create Account" ]
+            ]
+            p [ _style "text-align:center;margin-top:20px;color:#64748b;" ] [
+                str "Already have an account? "
+                a [ _href "/login"; _style "font-weight:900;color:var(--accent);" ] [ str "Login here" ]
+            ]
         ]
     ]

@@ -3,3 +3,7 @@
 .DS_Store
 *.user
 *.suo
+# SQLite database (contains user data — never commit)
+skypay.db
+# Email credentials — never commit
+appsettings.json
