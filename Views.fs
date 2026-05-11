@@ -405,12 +405,207 @@ input:focus, select:focus {
     font-weight: 700;
     color: #64748b;
     text-transform: uppercase;
+    box-shadow: 6px 6px 0px 0px black;
+}
+
+.btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0px 0px black;
+}
+
+/* Forms */
+input, select {
+    border: var(--border-width) solid black !important;
+    box-shadow: 3px 3px 0px 0px black !important;
+    font-family: inherit;
+    transition: transform 0.1s;
+}
+
+input:focus, select:focus {
+    outline: none;
+    background-color: #e0f2fe;
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0px 0px black !important;
+}
+
+/* Chart Container */
+.chart-container {
+    background-color: white;
+    border: var(--border-width) solid black;
+    box-shadow: var(--shadow-offset) var(--shadow-offset) 0px 0px black;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 40px;
+}
+
+/* Checkout Page Styles */
+.payment-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 40px;
+    background: white;
+    border: var(--border-width) solid black;
+    box-shadow: 10px 10px 0px 0px black;
+    border-radius: 15px;
+}
+
+.form-group { margin-bottom: 25px; position: relative; }
+.form-label { display: block; margin-bottom: 8px; font-weight: 900; font-size: 1.1rem; }
+.form-input {
+    width: 100%;
+    padding: 14px 14px 14px 40px;
+    border-radius: 8px;
+    font-size: 16px;
+    border: var(--border-width) solid black;
+    box-sizing: border-box;
+}
+
+.input-icon {
+    position: absolute;
+    left: 14px;
+    top: 42px;
+    font-size: 1.2rem;
+    color: #64748b;
+}
+
+.card-logos { display: flex; gap: 15px; margin-top: 10px; }
+.card-logo {
+    border: 2px solid #000;
+    border-radius: 8px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: 900;
+    transition: all 0.2s;
+    background-color: white;
+}
+.card-logo:hover {
+    transform: translateY(-2px);
+    box-shadow: 2px 2px 0px 0px black;
+}
+.card-logo.selected {
+    border: var(--border-width) solid black;
+    background-color: var(--primary);
+    box-shadow: 4px 4px 0px 0px black;
+    transform: translateY(-2px);
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 50px 20px;
+    background-color: white;
+    border: var(--border-width) solid black;
+    border-radius: 12px;
+    box-shadow: 6px 6px 0px 0px black;
+    margin: 40px 0;
+}
+.empty-state h2 { font-size: 2.5rem; margin-bottom: 10px; }
+.empty-state p { font-size: 1.2rem; color: #64748b; margin-bottom: 25px; }
+.empty-state .emoji { font-size: 5rem; margin-bottom: 20px; }
+
+/* Footer */
+.footer {
+    background-color: #1e293b;
+    color: white;
+    text-align: center;
+    padding: 30px;
+    border-top: var(--border-width) solid black;
+    margin-top: 60px;
+}
+.footer p { margin: 5px 0; font-weight: bold; }
+.footer-links a { color: var(--primary); text-decoration: none; margin: 0 10px; font-weight: bold; }
+.footer-links a:hover { text-decoration: underline; }
+
+/* ===== ORDER TRACKING PAGE ===== */
+.track-container {
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 40px;
+    background: white;
+    border: var(--border-width) solid black;
+    box-shadow: 10px 10px 0px 0px black;
+    border-radius: 15px;
+}
+.pipeline {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin: 35px 0;
+    position: relative;
+}
+.pipeline::before {
+    content: '';
+    position: absolute;
+    top: 23px;
+    left: 30px;
+    right: 30px;
+    height: 4px;
+    background: #e2e8f0;
+    z-index: 0;
+}
+.pipeline-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    z-index: 1;
+    flex: 1;
+}
+.step-circle {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: 3px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    font-weight: 900;
+    box-shadow: 3px 3px 0px 0px black;
+    background: #e2e8f0;
+}
+.step-done .step-circle  { background: #86efac; }
+.step-active .step-circle { background: var(--primary); animation: stepPulse 1.5s infinite; }
+.step-pending .step-circle { background: #f1f5f9; color: #94a3b8; }
+@keyframes stepPulse {
+    0%, 100% { box-shadow: 3px 3px 0px 0px black; }
+    50%       { box-shadow: 5px 5px 0px 0px black, 0 0 0 6px rgba(251,191,36,0.25); }
+}
+.step-label {
+    font-size: 0.68rem;
+    font-weight: 900;
+    text-align: center;
+    text-transform: uppercase;
+    max-width: 75px;
+    line-height: 1.3;
+}
+.step-done .step-label    { color: #16a34a; }
+.step-active .step-label  { color: #d97706; }
+.step-pending .step-label { color: #94a3b8; }
+.order-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 25px;
+}
+.order-info-cell {
+    background: #f8fafc;
+    border: 2px solid black;
+    border-radius: 8px;
+    padding: 12px 16px;
+    box-shadow: 2px 2px 0px black;
+}
+.order-info-cell .oi-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
     margin-bottom: 4px;
 }
 .order-info-cell .oi-value { font-size: 1rem; font-weight: 900; }
 """
 
-let layout (title: string) (content: XmlNode list) =
+let layout (title: string) (cartCount: int) (content: XmlNode list) =
     html [] [
         head [] [
             meta [ _charset "UTF-8" ]
@@ -427,7 +622,11 @@ let layout (title: string) (content: XmlNode list) =
                     div [ _class "nav-links" ] [
                         a [ _href "/" ] [ str "Home" ]
                         a [ _href "/track" ] [ str "✈️ Track Order" ]
-                        a [ _href "#" ] [ str "Cart (0)" ]
+                        a [ _href "/cart"; _style "position:relative;" ] [
+                            str "🛒 Cart"
+                            if cartCount > 0 then
+                                span [ _style "position:absolute;top:-8px;right:-10px;background:#f472b6;color:black;border:2px solid black;border-radius:50%;width:20px;height:20px;font-size:0.7rem;font-weight:900;display:flex;align-items:center;justify-content:center;box-shadow:1px 1px 0px black;" ] [ str (string cartCount) ]
+                        ]
                     ]
                 ]
                 div [ _class "container" ] content
@@ -482,7 +681,7 @@ let chartScriptTemplate = """
     });
 """
 
-let dashboardView (aircrafts: Aircraft list) (topStats: Aircraft list) (searchQuery: string) (brandFilter: string) =
+let dashboardView (aircrafts: Aircraft list) (topStats: Aircraft list) (searchQuery: string) (brandFilter: string) (cartCount: int) =
     let searchVal = if isNull searchQuery then "" else searchQuery
     let brandVal = if isNull brandFilter then "" else brandFilter
     let manufacturers = [ "All"; "Airbus"; "Boeing"; "Embraer"; "Bombardier"; "COMAC" ]
@@ -530,7 +729,7 @@ let dashboardView (aircrafts: Aircraft list) (topStats: Aircraft list) (searchQu
             "});"
         ]
 
-    layout "Skypay" [
+    layout "Skypay" cartCount [
         div [ _class "header" ] [
             h1 [] [ str "Aircraft Shop" ]
             p [] [ str "Browse our available inventory." ]
@@ -620,7 +819,12 @@ let dashboardView (aircrafts: Aircraft list) (topStats: Aircraft list) (searchQu
                             div [] [
                                 span [ _class (sprintf "tag %s" item.Manufacturer) ] [ str item.Manufacturer ]
                             ]
-                            a [ _href linkUrl; _class "btn" ] [ str "Buy Now" ]
+                            div [ _style "display:flex;gap:10px;margin-top:auto;flex-wrap:wrap;" ] [
+                                a [ _href linkUrl; _class "btn"; _style "flex:1;text-align:center;" ] [ str "Buy Now" ]
+                                tag "form" [ attr "action" (sprintf "/cart/add/%s" (item.Id.ToString())); attr "method" "POST"; attr "style" "flex:1;" ] [
+                                    button [ _type "submit"; _class "btn"; _style "width:100%;background:#3b82f6;color:white;" ] [ str "🛒 Add" ]
+                                ]
+                            ]
                         ]
                     ]
                 )
@@ -629,7 +833,7 @@ let dashboardView (aircrafts: Aircraft list) (topStats: Aircraft list) (searchQu
         script [] [ rawText chartScript ]
     ]
 
-let paymentView (aircraft: Aircraft) =
+let paymentView (aircraft: Aircraft) (cartCount: int) =
     let priceInfo = sprintf "$%s" ((aircraft.Price / 1m<USD>).ToString("N0"))
     let actionUrl = sprintf "/process-payment/%O" aircraft.Id
     // Build JS by concatenation to avoid sprintf %% conflicts with % in JS
@@ -679,7 +883,7 @@ let paymentView (aircraft: Aircraft) =
         "animStyle.textContent = '@keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }';\n" +
         "document.head.appendChild(animStyle);\n"
 
-    layout "Checkout" [
+    layout "Checkout" cartCount [
         div [ _class "payment-container" ] [
             div [ _style "text-align: center; margin-bottom: 30px;" ] [
                 h2 [] [ str "Checkout" ]
@@ -764,15 +968,13 @@ let paymentView (aircraft: Aircraft) =
         script [] [ rawText jsScript ]
     ]
 
-
-
 // Updated to accept finalPrice (after lambda discount) and a discountMsg
-let successView (aircraft: Aircraft) (finalPrice: decimal<USD>) (discountMsg: string) =
+let successView (aircraft: Aircraft) (finalPrice: decimal<USD>) (discountMsg: string) (cartCount: int) =
     let originalPriceText = sprintf "$%s USD" ((aircraft.Price / 1m<USD>).ToString("N0"))
     let finalPriceText    = sprintf "$%s USD" ((finalPrice / 1m<USD>).ToString("N0"))
     let hadDiscount       = discountMsg <> "" && finalPrice < aircraft.Price
 
-    layout "Order Placed" [
+    layout "Order Placed" cartCount [
         div [ _class "container"; _style "text-align: center; padding-top: 50px;" ] [
             div [ _style "font-size: 4rem; margin-bottom: 10px;" ] [ str "✅" ]
             h1 [] [ str "Order Confirmed!" ]
@@ -812,7 +1014,7 @@ let successView (aircraft: Aircraft) (finalPrice: decimal<USD>) (discountMsg: st
 // ==========================================
 // This view uses pattern matching on the DeliveryStatus DU.
 // The compiler guarantees we handle ALL 5 cases — no bugs from missed branches.
-let orderTrackView (query: string) (result: OrderRecord option) =
+let orderTrackView (query: string) (result: OrderRecord option) (cartCount: int) =
     let queryDisplay = if isNull query then "" else query.ToUpper()
 
     // The 5 pipeline steps: (icon, label)
@@ -934,6 +1136,110 @@ let orderTrackView (query: string) (result: OrderRecord option) =
         ]
     ]
 
-    layout "Track Your Order | Skypay" [
+    layout "Track Your Order | Skypay" cartCount [
         div [ _class "track-container" ] (topSection @ resultSection)
+    ]
+
+// ==========================================
+// SHOPPING CART VIEW
+// ==========================================
+// Shows all items in the session cart, a live currency converter,
+// a running total, and individual checkout links.
+let cartView (items: CartItem list) (cartCount: int) =
+    // Compute total in USD (using F# Units of Measure)
+    let totalUsd = items |> List.sumBy (fun i -> i.PriceUsd)
+
+    // Currency conversions using the HOFs defined in Models.fs
+    // We embed the rates as JS constants so the client-side toggle is instant.
+    let ratesJs =
+        "const rates = { USD: 1.0, EUR: " + string usdToEurRate + ", SGD: " + string usdToSgdRate + ", GBP: " + string usdToGbpRate + " };\n" +
+        "const symbols = { USD: '$', EUR: '€', SGD: 'S$', GBP: '£' };\n" +
+        "let activeCurrency = 'USD';\n" +
+        "function setCurrency(code) {\n" +
+        "  activeCurrency = code;\n" +
+        "  document.querySelectorAll('.cur-btn').forEach(b => b.classList.toggle('selected', b.dataset.cur === code));\n" +
+        "  document.querySelectorAll('[data-usd]').forEach(el => {\n" +
+        "    const usd = parseFloat(el.dataset.usd);\n" +
+        "    const converted = usd * rates[code];\n" +
+        "    el.textContent = symbols[code] + Math.round(converted).toLocaleString();\n" +
+        "  });\n" +
+        "}\n"
+
+    layout "Shopping Cart | Skypay" cartCount [
+        div [ _class "track-container"; _style "max-width:800px;" ] [
+
+            // ---- Header ----
+            div [ _style "text-align:center;margin-bottom:28px;" ] [
+                div [ _style "font-size:3rem;margin-bottom:8px;" ] [ str "🛒" ]
+                h1 [] [ str "Your Cart" ]
+                p [ _style "color:#64748b;" ] [
+                    str (sprintf "%d item(s) selected" items.Length)
+                ]
+            ]
+
+            // ---- Currency Switcher ----
+            // Uses convertFromUsd (partial application) — rates injected from F# into JS
+            div [ _style "margin-bottom:24px;background:#f0fdf4;border:3px solid black;border-radius:12px;padding:16px 20px;box-shadow:4px 4px 0px black;" ] [
+                p [ _style "margin:0 0 10px 0;font-weight:900;font-size:0.95rem;" ] [ str "💱 Currency Converter (powered by F# Units of Measure)" ]
+                div [ _style "display:flex;gap:10px;flex-wrap:wrap;" ] [
+                    for (code, flag) in [("USD","🇺🇸");("EUR","🇪🇺");("SGD","🇸🇬");("GBP","🇬🇧")] do
+                        button [
+                            _class "btn cur-btn"
+                            attr "data-cur" code
+                            attr "onclick" (sprintf "setCurrency('%s')" code)
+                            _style (if code = "USD" then "background:var(--primary);border:3px solid black;" else "background:white;")
+                        ] [ str (sprintf "%s %s" flag code) ]
+                ]
+            ]
+
+            // ---- Empty State ----
+            if items.IsEmpty then
+                div [ _class "empty-state" ] [
+                    div [ _class "emoji" ] [ str "🛒💨" ]
+                    h2 [] [ str "Your cart is empty!" ]
+                    p [] [ str "Browse our inventory and add some aircraft." ]
+                    a [ _href "/"; _class "btn" ] [ str "← Browse Aircraft" ]
+                ]
+            else
+                // ---- Cart Items ----
+                div [ _style "display:flex;flex-direction:column;gap:16px;margin-bottom:28px;" ] (
+                    items |> List.map (fun item ->
+                        let bgStyle = sprintf "background-image:url('%s');background-size:cover;background-position:center;" item.ImageUrl
+                        div [ _style "display:flex;gap:16px;align-items:center;background:white;border:3px solid black;border-radius:12px;padding:16px;box-shadow:4px 4px 0px black;" ] [
+                            div [ _style (sprintf "width:90px;height:65px;border-radius:8px;border:2px solid black;flex-shrink:0;%s" bgStyle) ] []
+                            div [ _style "flex:1;" ] [
+                                p [ _style "margin:0 0 2px 0;font-weight:900;font-size:1.1rem;" ] [ str item.Model ]
+                                p [ _style "margin:0;font-size:0.85rem;color:#64748b;" ] [ str item.Manufacturer ]
+                                p [ _style "margin:4px 0 0 0;font-weight:900;color:var(--accent);font-size:1.05rem;" ] [
+                                    span [ attr "data-usd" (string item.PriceUsd) ] [
+                                        str (sprintf "$%s" (item.PriceUsd.ToString("N0")))
+                                    ]
+                                    str " USD"
+                                ]
+                            ]
+                            div [ _style "display:flex;flex-direction:column;gap:8px;" ] [
+                                a [ _href (sprintf "/checkout/%s" item.AircraftId); _class "btn"; _style "font-size:0.8rem;padding:8px 14px;text-align:center;" ] [ str "Buy Now" ]
+                                a [ _href (sprintf "/cart/remove/%s" item.AircraftId); _style "font-size:0.8rem;padding:8px 14px;text-align:center;background:#fee2e2;border:2px solid #dc2626;border-radius:8px;font-weight:900;color:#dc2626;text-decoration:none;box-shadow:2px 2px 0px black;" ] [ str "✕ Remove" ]
+                            ]
+                        ]
+                    )
+                )
+
+                // ---- Total + Actions ----
+                div [ _style "background:var(--primary);border:3px solid black;border-radius:12px;padding:20px 24px;box-shadow:6px 6px 0px black;text-align:center;" ] [
+                    p [ _style "margin:0 0 4px 0;font-size:0.9rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;" ] [ str "Cart Total" ]
+                    p [ _style "margin:0 0 16px 0;font-size:2.5rem;font-weight:900;" ] [
+                        span [ attr "data-usd" (string totalUsd) ] [
+                            str (sprintf "$%s" (totalUsd.ToString("N0")))
+                        ]
+                        str " USD"
+                    ]
+                    div [ _style "display:flex;gap:12px;justify-content:center;flex-wrap:wrap;" ] [
+                        a [ _href "/"; _class "btn"; _style "background:white;" ] [ str "← Continue Shopping" ]
+                        a [ _href "/cart/clear"; _style "padding:12px 24px;background:#fee2e2;border:3px solid #dc2626;border-radius:8px;font-weight:900;color:#dc2626;text-decoration:none;box-shadow:4px 4px 0px black;" ] [ str "🗑 Clear Cart" ]
+                    ]
+                ]
+
+            script [] [ rawText ratesJs ]
+        ]
     ]

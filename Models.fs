@@ -173,3 +173,40 @@ let mockOrderDatabase : Map<string, OrderRecord> =
               Destination = "Beijing Capital Airport, China"; Status = OrderConfirmed
               EstimatedDate = "December 1, 2026"; OrderDate = "May 10, 2026" }
     ]
+
+// ==========================================
+// CURRENCY CONVERSION (Units of Measure)
+// ==========================================
+// Additional currency measure types — zero runtime cost, pure compile-time safety.
+[<Measure>] type EUR  // Euro
+[<Measure>] type SGD  // Singapore Dollar
+[<Measure>] type GBP  // British Pound Sterling
+
+// Reference exchange rates from USD (2026)
+let usdToEurRate = 0.92m
+let usdToSgdRate = 1.35m
+let usdToGbpRate = 0.79m
+
+// Lambda Calculus: A CURRIED Higher-Order Function for currency conversion.
+// convertFromUsd : decimal -> decimal<USD> -> decimal
+// Takes a rate, and RETURNS a new function that converts any USD price.
+let convertFromUsd = fun rate -> fun (price: decimal<USD>) -> (price / 1m<USD>) * rate
+
+// Partial Application: "bake in" the rate to create specialized converters.
+// Each is a lambda waiting for a decimal<USD> price.
+let toEur = convertFromUsd usdToEurRate  // decimal<USD> -> decimal (EUR amount)
+let toSgd = convertFromUsd usdToSgdRate  // decimal<USD> -> decimal (SGD amount)
+let toGbp = convertFromUsd usdToGbpRate  // decimal<USD> -> decimal (GBP amount)
+
+// ==========================================
+// SHOPPING CART
+// ==========================================
+// CartItem stores what we need to display the cart and compute totals.
+// PriceUsd is plain decimal (not decimal<USD>) for JSON serialisation compat.
+type CartItem = {
+    AircraftId   : string   // Guid stored as string
+    Model        : string
+    Manufacturer : string
+    PriceUsd     : decimal
+    ImageUrl     : string
+}
