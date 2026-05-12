@@ -1,4 +1,4 @@
-﻿module Skypay.App
+module Skypay.App
 
 open System
 open System.Text.Json
@@ -319,10 +319,17 @@ let main args =
             o.IdleTimeout        <- TimeSpan.FromHours(2.0)) |> ignore
 
         let app = builder.Build()
-        // Read email config from appsettings.json
+        // Read email config: env vars take priority over appsettings.json
+        // Set SKYPAY_SENDER_EMAIL and SKYPAY_APP_PASSWORD in Render's Environment Variables dashboard
         let config = app.Services.GetRequiredService<IConfiguration>()
-        cfgSender   <- if isNull (config.["Email:SenderEmail"]) then "" else config.["Email:SenderEmail"]
-        cfgPassword <- if isNull (config.["Email:AppPassword"])  then "" else config.["Email:AppPassword"]
+        let envSender   = Environment.GetEnvironmentVariable("SKYPAY_SENDER_EMAIL")
+        let envPassword = Environment.GetEnvironmentVariable("SKYPAY_APP_PASSWORD")
+        cfgSender   <- if not (String.IsNullOrEmpty envSender)   then envSender
+                       elif not (isNull config.["Email:SenderEmail"]) then config.["Email:SenderEmail"]
+                       else ""
+        cfgPassword <- if not (String.IsNullOrEmpty envPassword) then envPassword
+                       elif not (isNull config.["Email:AppPassword"])  then config.["Email:AppPassword"]
+                       else ""
 
         // Initialise SQLite database
         Database.initDb()
