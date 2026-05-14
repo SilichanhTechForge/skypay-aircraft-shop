@@ -95,6 +95,50 @@ input:focus, select:focus { outline: none; border-color: var(--navy) !important;
 .order-info-cell { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; }
 .order-info-cell .oi-label { font-size: 0.7rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
 .order-info-cell .oi-value { font-size: 0.9375rem; font-weight: 600; color: var(--navy); }
+
+/* ── LEASE MODULE STYLES ─────────────────────────────────── */
+.lease-hero { background: linear-gradient(135deg, #0f2044 0%, #1a3a6e 50%, #0d3320 100%); color: white; padding: 56px 48px; border-radius: var(--radius-lg); margin-bottom: 36px; position: relative; overflow: hidden; }
+.lease-hero::before { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+.lease-hero h1 { font-size: 2.4rem; font-weight: 800; color: white; margin-bottom: 10px; letter-spacing: -0.03em; position: relative; }
+.lease-hero p { color: rgba(255,255,255,0.72); font-size: 1.05rem; margin: 0 0 28px; position: relative; }
+.lease-stats { display: flex; gap: 32px; flex-wrap: wrap; position: relative; }
+.lease-stat { text-align: center; }
+.lease-stat .ls-val { font-size: 1.6rem; font-weight: 800; color: var(--gold); line-height: 1; }
+.lease-stat .ls-label { font-size: 0.72rem; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
+.lease-card { background: var(--card); border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: var(--shadow); overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; }
+.lease-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
+.lease-card-img { height: 180px; background-size: cover; background-position: center; position: relative; }
+.lease-card-badge { position: absolute; top: 12px; left: 12px; background: rgba(15,32,68,0.85); color: var(--gold); font-size: 0.7rem; font-weight: 700; padding: 4px 10px; border-radius: 20px; letter-spacing: 0.05em; text-transform: uppercase; backdrop-filter: blur(4px); }
+.lease-card-body { padding: 20px 24px 24px; flex: 1; display: flex; flex-direction: column; }
+.lease-rate-usd { font-size: 1.4rem; font-weight: 800; color: var(--navy); line-height: 1; }
+.lease-rate-lak { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+.cancel-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+.cancel-yes { background: #dcfce7; color: #166534; }
+.cancel-no  { background: #fef9c3; color: #854d0e; }
+.status-pill { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+.status-Enquiry          { background: #e0f2fe; color: #0369a1; }
+.status-OfferSubmitted   { background: #fef9c3; color: #854d0e; }
+.status-NegotiationOpen  { background: #fed7aa; color: #9a3412; }
+.status-ContractSigned   { background: #dcfce7; color: #166534; }
+.status-AircraftOnGround { background: #c7d2fe; color: #3730a3; }
+.status-Cancelled        { background: #fee2e2; color: #991b1b; }
+.lease-form-container { max-width: 680px; margin: 0 auto; }
+.lease-aircraft-summary { background: linear-gradient(135deg, var(--navy), var(--navy-mid)); color: white; border-radius: var(--radius-lg); padding: 28px 32px; margin-bottom: 32px; display: flex; gap: 24px; align-items: center; }
+.lease-aircraft-summary img { width: 100px; height: 70px; object-fit: cover; border-radius: 8px; border: 2px solid rgba(255,255,255,0.2); }
+.las-title { font-size: 1.4rem; font-weight: 800; color: white; margin: 0 0 4px; }
+.las-mfr { color: var(--gold); font-size: 0.875rem; font-weight: 600; margin: 0 0 8px; }
+.las-price { font-size: 0.82rem; color: rgba(255,255,255,0.65); }
+.duration-btn { padding: 10px 20px; border: 2px solid var(--border); border-radius: 8px; background: white; cursor: pointer; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.875rem; transition: all 0.15s; color: var(--text); }
+.duration-btn:hover { border-color: var(--navy); }
+.duration-btn.active { border-color: var(--gold); background: var(--gold-light); color: var(--navy); }
+.price-preview-box { background: linear-gradient(135deg, #f0fdf4, #dcfce7); border: 2px solid #16a34a; border-radius: 12px; padding: 20px 24px; margin: 20px 0; animation: slideUp 0.3s ease; }
+@keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.lease-activity-row { display: flex; gap: 16px; align-items: center; padding: 16px; background: white; border: 1px solid var(--border); border-radius: 10px; transition: box-shadow 0.15s; }
+.lease-activity-row:hover { box-shadow: var(--shadow); }
+.lar-flag { font-size: 1.5rem; width: 40px; text-align: center; flex-shrink: 0; }
+.lar-body { flex: 1; }
+.lar-airline { font-weight: 700; font-size: 0.95rem; color: var(--navy); margin: 0 0 2px; }
+.lar-detail { font-size: 0.8rem; color: var(--muted); margin: 0; }
 """
 
 let layout (title: string) (cartCount: int) (username: string option) (content: XmlNode list) =
@@ -113,6 +157,7 @@ let layout (title: string) (cartCount: int) (username: string option) (content: 
                     a [ _href "/"; _class "nav-brand" ] [ str "SKYPAY" ]
                     div [ _class "nav-links" ] [
                         a [ _href "/" ] [ str "Home" ]
+                        a [ _href "/lease"; _style "color:var(--gold);font-weight:600;" ] [ str "Lease Aircraft" ]
                         a [ _href "/track" ] [ str "Track Order" ]
                         a [ _href "/cart"; _style "position:relative;" ] [
                             str "Cart"
@@ -803,5 +848,299 @@ let registerView (errorMsg: string option) =
                 str "Already have an account? "
                 a [ _href "/login"; _style "font-weight:900;color:var(--accent);" ] [ str "Login here" ]
             ]
+        ]
+    ]
+
+// ==========================================
+// LEASE LISTING VIEW
+// ==========================================
+let leaseListView (aircrafts: Aircraft list) (leases: LeaseRequest list) (cartCount: int) (username: string option) =
+    let countryFlag c =
+        match c with
+        | "Laos"     -> "🇱🇦"
+        | "Cambodia" -> "🇰🇭"
+        | "Myanmar"  -> "🇲🇲"
+        | "Vietnam"  -> "🇻🇳"
+        | "Thailand" -> "🇹🇭"
+        | _          -> "🌏"
+
+    let statusLabel s =
+        match s with
+        | Enquiry          -> ("Enquiry",            "status-Enquiry")
+        | OfferSubmitted   -> ("Offer Submitted",    "status-OfferSubmitted")
+        | NegotiationOpen  -> ("Negotiating",        "status-NegotiationOpen")
+        | ContractSigned   -> ("Contract Signed",    "status-ContractSigned")
+        | AircraftOnGround -> ("Aircraft On Ground", "status-AircraftOnGround")
+        | Cancelled        -> ("Cancelled",          "status-Cancelled")
+
+    let durationLabel d =
+        match d with
+        | ShortTerm  n -> sprintf "%d-month Short Lease" n
+        | MediumTerm n -> sprintf "%d-month Medium Lease" n
+        | LongTerm   n -> sprintf "%d-month Long Lease" n
+
+    layout "Lease Aircraft | Skypay" cartCount username [
+        div [ _class "lease-hero" ] [
+            h1 [] [ str "On-Demand Aircraft Leasing" ]
+            p [] [ str "Flexible leases for Southeast Asian airlines. Lease when you need it. Cancel when you don't." ]
+            div [ _class "lease-stats" ] [
+                div [ _class "lease-stat" ] [
+                    div [ _class "ls-val" ] [ str (string aircrafts.Length) ]
+                    div [ _class "ls-label" ] [ str "Aircraft Available" ]
+                ]
+                div [ _class "lease-stat" ] [
+                    div [ _class "ls-val" ] [ str "5" ]
+                    div [ _class "ls-label" ] [ str "SEA Countries" ]
+                ]
+                div [ _class "lease-stat" ] [
+                    div [ _class "ls-val" ] [ str "0%" ]
+                    div [ _class "ls-label" ] [ str "Cancellation Penalty" ]
+                ]
+                div [ _class "lease-stat" ] [
+                    div [ _class "ls-val" ] [ str "LAK" ]
+                    div [ _class "ls-label" ] [ str "Dual Currency Display" ]
+                ]
+            ]
+        ]
+
+        div [ _style "background:#fffbeb;border:1px solid #fbbf24;border-radius:12px;padding:16px 24px;margin-bottom:32px;" ] [
+            p [ _style "margin:0 0 4px;font-weight:700;color:#92400e;" ] [ str "Designed for Laos & Southeast Asia" ]
+            p [ _style "margin:0;font-size:0.875rem;color:#78350f;" ] [
+                str "Unlike Ryanair's rigid ownership model, Skypay Lease is fully flexible. "
+                str "Request an aircraft for peak tourism season (Nov-Apr), then cancel after — zero penalties. "
+                str "Pricing shown in both USD and LAK (Lao Kip) for local operators."
+            ]
+        ]
+
+        h2 [ _style "margin-bottom:20px;" ] [ str "Available for Lease" ]
+        div [ _class "grid"; _style "margin-bottom:48px;" ] (
+            aircrafts |> List.map (fun ac ->
+                let monthlyUsd = shortTermLease ac.Price
+                let monthlyLak = toLak monthlyUsd
+                let rateUsdStr = sprintf "$%s/mo" ((monthlyUsd / 1m<USD>).ToString("N0"))
+                let rateLakStr = sprintf "approx. LAK %s/mo" (monthlyLak.ToString("N0"))
+                let imgStyle   = sprintf "background-image:url('%s');" ac.ImageUrl
+                let leaseUrl   = sprintf "/lease/request/%O" ac.Id
+                div [ _class "lease-card" ] [
+                    div [ _class "lease-card-img"; _style imgStyle ] [
+                        div [ _class "lease-card-badge" ] [ str ac.Manufacturer ]
+                    ]
+                    div [ _class "lease-card-body" ] [
+                        p [ _style "margin:0 0 4px;font-weight:700;font-size:1.05rem;color:var(--navy);" ] [ str ac.Model ]
+                        div [ _class "lease-rate-usd" ] [ str rateUsdStr ]
+                        div [ _class "lease-rate-lak" ] [ str rateLakStr ]
+                        p [ _style "font-size:0.8rem;color:var(--muted);margin:10px 0 14px;flex:1;" ] [
+                            str (if ac.Description.Length > 70 then ac.Description.[..69] + "..." else ac.Description)
+                        ]
+                        div [ _style "display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap;" ] [
+                            span [ _class "cancel-badge cancel-yes" ] [ str "Free Cancel" ]
+                            a [ _href leaseUrl; _class "btn"; _style "font-size:0.82rem;padding:8px 16px;" ] [ str "Request Lease" ]
+                        ]
+                    ]
+                ]
+            )
+        )
+
+        h2 [ _style "margin-bottom:20px;" ] [ str "Live Lease Activity — SEA Region" ]
+        div [ _style "display:flex;flex-direction:column;gap:12px;margin-bottom:48px;" ] (
+            leases |> List.map (fun lr ->
+                let (statusText, statusCls) = statusLabel lr.Status
+                let flag    = countryFlag lr.Country
+                let durText = durationLabel lr.Duration
+                let rateStr = sprintf "$%s/mo" ((lr.MonthlyRate / 1m<USD>).ToString("N0"))
+                div [ _class "lease-activity-row" ] [
+                    div [ _class "lar-flag" ] [ str flag ]
+                    div [ _class "lar-body" ] [
+                        p [ _class "lar-airline" ] [ str (sprintf "%s — %s" lr.AirlineName lr.AircraftModel) ]
+                        p [ _class "lar-detail" ] [ str (sprintf "%s · %s · %s · %s" lr.Airport durText rateStr lr.RequestDate) ]
+                    ]
+                    span [ _class (sprintf "status-pill %s" statusCls) ] [ str statusText ]
+                    if lr.Cancellable then
+                        span [ _class "cancel-badge cancel-yes"; _style "flex-shrink:0;" ] [ str "Cancellable" ]
+                    else
+                        span [ _class "cancel-badge cancel-no"; _style "flex-shrink:0;" ] [ str "Committed" ]
+                ]
+            )
+        )
+
+        div [ _style "background:var(--navy);color:white;border-radius:var(--radius-lg);padding:36px 40px;" ] [
+            h2 [ _style "color:var(--gold);margin-bottom:16px;" ] [ str "Why F# Powers This Leasing Platform" ]
+            div [ _style "display:grid;grid-template-columns:1fr 1fr;gap:24px;color:rgba(255,255,255,0.82);font-size:0.9rem;" ] [
+                div [] [
+                    p [ _style "font-weight:700;color:white;margin:0 0 6px;" ] [ str "Units of Measure (LAK / USD)" ]
+                    p [ _style "margin:0;font-family:monospace;background:rgba(255,255,255,0.08);padding:10px;border-radius:6px;font-size:0.82rem;" ] [
+                        str "[<Measure>] type USD"; br []; str "[<Measure>] type LAK"; br []; str "// Compiler rejects mixing them!"
+                    ]
+                ]
+                div [] [
+                    p [ _style "font-weight:700;color:white;margin:0 0 6px;" ] [ str "Discriminated Union (LeaseStatus)" ]
+                    p [ _style "margin:0;font-family:monospace;background:rgba(255,255,255,0.08);padding:10px;border-radius:6px;font-size:0.82rem;" ] [
+                        str "| Enquiry"; br []; str "| ContractSigned"; br []; str "| Cancelled  // all cases enforced"
+                    ]
+                ]
+                div [] [
+                    p [ _style "font-weight:700;color:white;margin:0 0 6px;" ] [ str "Curried HOF (Lease Pricing)" ]
+                    p [ _style "margin:0;font-family:monospace;background:rgba(255,255,255,0.08);padding:10px;border-radius:6px;font-size:0.82rem;" ] [
+                        str "let leaseMonthlyRate ="; br []; str "  fun dur -> fun price ->"; br []; str "    baseRate * modifier"
+                    ]
+                ]
+                div [] [
+                    p [ _style "font-weight:700;color:white;margin:0 0 6px;" ] [ str "Partial Application (Duration Rates)" ]
+                    p [ _style "margin:0;font-family:monospace;background:rgba(255,255,255,0.08);padding:10px;border-radius:6px;font-size:0.82rem;" ] [
+                        str "let shortTermLease ="; br []; str "  leaseMonthlyRate (ShortTerm 3)"; br []; str "// ready-to-use lambda"
+                    ]
+                ]
+            ]
+        ]
+    ]
+
+// ==========================================
+// LEASE REQUEST FORM VIEW
+// ==========================================
+let leaseRequestView (aircraft: Aircraft) (submitted: bool) (cartCount: int) (username: string option) =
+    let shortRateUsd = shortTermLease  aircraft.Price
+    let medRateUsd   = mediumTermLease aircraft.Price
+    let longRateUsd  = longTermLease   aircraft.Price
+    let shortRateLak = toLak shortRateUsd
+    let medRateLak   = toLak medRateUsd
+    let longRateLak  = toLak longRateUsd
+    let toIntU (v: decimal<USD>) = int (v / 1m<USD>)
+    let toIntD (v: decimal)      = int v
+
+    let jsScript =
+        "const rates = {" +
+        "  short:  { usd: " + string (toIntU shortRateUsd) + ", lak: " + string (toIntD shortRateLak) + ", label: 'Short Term (1-3 months) — +30% premium' }," +
+        "  medium: { usd: " + string (toIntU medRateUsd)   + ", lak: " + string (toIntD medRateLak)   + ", label: 'Medium Term (4-12 months) — Standard rate' }," +
+        "  long:   { usd: " + string (toIntU longRateUsd)  + ", lak: " + string (toIntD longRateLak)  + ", label: 'Long Term (13-36 months) — 20% discount' }" +
+        "};\n" +
+        "function selectDuration(key) {\n" +
+        "  document.querySelectorAll('.duration-btn').forEach(b => b.classList.toggle('active', b.dataset.key === key));\n" +
+        "  document.getElementById('dur-input').value = key;\n" +
+        "  const r = rates[key];\n" +
+        "  document.getElementById('dur-label').textContent = r.label;\n" +
+        "  document.getElementById('rate-usd').textContent = '$' + r.usd.toLocaleString() + '/month';\n" +
+        "  document.getElementById('rate-lak').textContent = 'LAK ' + r.lak.toLocaleString() + '/month';\n" +
+        "  document.getElementById('price-box').style.display = 'block';\n" +
+        "}\n" +
+        "selectDuration('short');\n"
+
+    let actionUrl  = sprintf "/lease/request/%O" aircraft.Id
+    let priceText  = sprintf "$%s USD" ((aircraft.Price / 1m<USD>).ToString("N0"))
+    let fromRate   = sprintf "$%s/month" ((shortRateUsd / 1m<USD>).ToString("N0"))
+
+    layout (sprintf "Lease %s | Skypay" aircraft.Model) cartCount username [
+        div [ _class "lease-form-container" ] [
+            if submitted then
+                div [ _style "text-align:center;padding:60px 20px;" ] [
+                    div [ _style "font-size:3rem;margin-bottom:16px;" ] [ str "OK" ]
+                    h1 [ _style "color:var(--navy);" ] [ str "Lease Request Submitted!" ]
+                    p [ _style "color:var(--muted);font-size:1.05rem;margin-bottom:8px;" ] [ str (sprintf "Your request for the %s has been received." aircraft.Model) ]
+                    p [ _style "color:var(--muted);margin-bottom:32px;" ] [ str "A Skypay leasing officer will contact you within 48 hours to discuss terms." ]
+                    div [ _style "background:#f0fdf4;border:2px solid #16a34a;border-radius:12px;padding:20px;margin-bottom:32px;text-align:left;" ] [
+                        p [ _style "font-weight:700;margin:0 0 8px;" ] [ str "What happens next?" ]
+                        p [ _style "margin:4px 0;font-size:0.875rem;color:#475569;" ] [ str "1. Our team reviews your route plan and aircraft suitability." ]
+                        p [ _style "margin:4px 0;font-size:0.875rem;color:#475569;" ] [ str "2. A formal lease offer is prepared within 48 hours." ]
+                        p [ _style "margin:4px 0;font-size:0.875rem;color:#475569;" ] [ str "3. You can accept, negotiate, or cancel — no commitment yet." ]
+                        p [ _style "margin:4px 0;font-size:0.875rem;color:#16a34a;font-weight:600;" ] [ str "4. Aircraft delivered to your airport once contract is signed." ]
+                    ]
+                    div [ _style "display:flex;gap:12px;justify-content:center;" ] [
+                        a [ _href "/lease"; _class "btn" ] [ str "Back to Lease Listings" ]
+                        a [ _href "/"; _class "btn"; _style "background:var(--gold);color:var(--navy);" ] [ str "Browse Aircraft to Buy" ]
+                    ]
+                ]
+            else
+                div [ _class "lease-aircraft-summary" ] [
+                    div [ _style (sprintf "width:100px;height:70px;border-radius:8px;border:2px solid rgba(255,255,255,0.2);background-image:url('%s');background-size:cover;background-position:center;flex-shrink:0;" aircraft.ImageUrl) ] []
+                    div [] [
+                        p [ _class "las-title" ] [ str aircraft.Model ]
+                        p [ _class "las-mfr"   ] [ str aircraft.Manufacturer ]
+                        p [ _class "las-price" ] [ str (sprintf "List price: %s · Lease from ~%s" priceText fromRate) ]
+                        span [ _class "cancel-badge cancel-yes"; _style "margin-top:8px;display:inline-flex;" ] [ str "Free Cancellation" ]
+                    ]
+                ]
+
+                h2 [ _style "margin-bottom:6px;" ] [ str "Submit Lease Request" ]
+                p [ _style "color:var(--muted);margin-bottom:28px;font-size:0.9rem;" ] [
+                    str "Fill in your airline details. A Skypay leasing officer will respond within 48 hours."
+                ]
+
+                tag "form" [ attr "action" actionUrl; attr "method" "POST" ] [
+                    div [ _style "background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px;" ] [
+                        p [ _style "font-weight:700;font-size:0.875rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin:0 0 18px;" ] [ str "Airline Information" ]
+                        div [ _class "form-group" ] [
+                            label [ _class "form-label" ] [ str "Airline / Operator Name" ]
+                            input [ _type "text"; _name "airlineName"; _id "airlineName"; _class "form-input"; _placeholder "e.g. Lao Airlines, Lao Skyway"; _required ]
+                        ]
+                        div [ _style "display:grid;grid-template-columns:1fr 1fr;gap:16px;" ] [
+                            div [ _class "form-group" ] [
+                                label [ _class "form-label" ] [ str "Contact Person" ]
+                                input [ _type "text"; _name "contactName"; _id "contactName"; _class "form-input"; _placeholder "Full name"; _required ]
+                            ]
+                            div [ _class "form-group" ] [
+                                label [ _class "form-label" ] [ str "Contact Email" ]
+                                input [ _type "email"; _name "contactEmail"; _id "contactEmail"; _class "form-input"; _placeholder "ops@airline.la"; _required ]
+                            ]
+                        ]
+                        div [ _style "display:grid;grid-template-columns:1fr 1fr;gap:16px;" ] [
+                            div [ _class "form-group" ] [
+                                label [ _class "form-label" ] [ str "Country" ]
+                                select [ _name "country"; _id "country"; _class "form-input"; _required ] [
+                                    option [ _value "Laos"     ] [ str "Laos" ]
+                                    option [ _value "Cambodia" ] [ str "Cambodia" ]
+                                    option [ _value "Myanmar"  ] [ str "Myanmar" ]
+                                    option [ _value "Vietnam"  ] [ str "Vietnam" ]
+                                    option [ _value "Thailand" ] [ str "Thailand" ]
+                                    option [ _value "Other"    ] [ str "Other" ]
+                                ]
+                            ]
+                            div [ _class "form-group" ] [
+                                label [ _class "form-label" ] [ str "Base Airport (ICAO/Name)" ]
+                                input [ _type "text"; _name "airport"; _id "airport"; _class "form-input"; _placeholder "e.g. Wattay Intl (VTE)"; _required ]
+                            ]
+                        ]
+                        div [ _class "form-group"; _style "margin-bottom:0;" ] [
+                            label [ _class "form-label" ] [ str "Intended Route Plan" ]
+                            tag "textarea" [ attr "name" "routePlan"; attr "id" "routePlan"; attr "class" "form-input"; attr "rows" "3"; attr "placeholder" "e.g. VTE-BKK, VTE-HAN — seasonal tourism Nov to Apr 2026"; attr "required" "" ] []
+                        ]
+                    ]
+
+                    div [ _style "background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px;" ] [
+                        p [ _style "font-weight:700;font-size:0.875rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin:0 0 16px;" ] [ str "Lease Duration & Pricing" ]
+                        div [ _style "display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;" ] [
+                            button [ _type "button"; _class "duration-btn active"; attr "data-key" "short";  attr "onclick" "selectDuration('short')"  ] [ str "Short Term" ]
+                            button [ _type "button"; _class "duration-btn";        attr "data-key" "medium"; attr "onclick" "selectDuration('medium')" ] [ str "Medium Term" ]
+                            button [ _type "button"; _class "duration-btn";        attr "data-key" "long";   attr "onclick" "selectDuration('long')"   ] [ str "Long Term" ]
+                        ]
+                        input [ _type "hidden"; _name "duration"; _id "dur-input"; _value "short" ]
+                        p [ _id "dur-label"; _style "font-size:0.875rem;color:var(--muted);margin:0 0 12px;" ] []
+                        div [ _id "price-box"; _class "price-preview-box"; _style "display:none;" ] [
+                            p [ _style "margin:0 0 4px;font-size:0.8rem;font-weight:600;color:#166534;text-transform:uppercase;letter-spacing:0.05em;" ] [ str "Estimated Monthly Rate" ]
+                            p [ _id "rate-usd"; _style "margin:0;font-size:1.6rem;font-weight:800;color:var(--navy);" ] []
+                            p [ _id "rate-lak"; _style "margin:4px 0 0;font-size:0.875rem;color:var(--muted);" ] []
+                            p [ _style "margin:12px 0 0;font-size:0.78rem;color:#166534;" ] [
+                                str "Rate calculated by F# Lambda Calculus: "
+                                code [] [ str "leaseMonthlyRate duration price" ]
+                            ]
+                        ]
+                    ]
+
+                    div [ _style "background:#fffbeb;border:1px solid #fbbf24;border-radius:12px;padding:20px 24px;margin-bottom:28px;display:flex;gap:14px;align-items:flex-start;" ] [
+                        div [ _style "font-size:1.4rem;margin-top:2px;" ] [ str "Note" ]
+                        div [] [
+                            p [ _style "font-weight:700;margin:0 0 4px;color:#92400e;" ] [ str "Flexible Cancellation Guarantee" ]
+                            p [ _style "margin:0;font-size:0.875rem;color:#78350f;" ] [
+                                str "You can cancel this lease request at any time before the contract is signed — "
+                                strong [] [ str "no fees, no penalties" ]
+                                str ". Once signed, a 30-day notice period applies. Unlike rigid airline ownership models, we understand that demand in Laos and SEA is seasonal."
+                            ]
+                        ]
+                    ]
+
+                    button [ _type "submit"; _class "btn"; _style "width:100%;padding:14px;font-size:1rem;" ] [ str "Submit Lease Request" ]
+                    p [ _style "text-align:center;margin-top:16px;font-size:0.8rem;color:var(--muted);" ] [
+                        str "No commitment until contract is signed. A Skypay officer will contact you within 48 hours."
+                    ]
+                ]
+                script [] [ rawText jsScript ]
         ]
     ]

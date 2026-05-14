@@ -208,6 +208,23 @@ let trackOrderHandler : HttpHandler =
         let result = if q = "" then None else Map.tryFind q mockOrderDatabase
         htmlView (orderTrackView q result (getCartCount ctx) (getUserFromSession ctx)) next ctx
 
+// ── Lease Handlers ────────────────────────────────────────────────────────
+let leaseListHandler : HttpHandler =
+    fun next ctx ->
+        htmlView (leaseListView aircraftDatabase mockLeaseRequests (getCartCount ctx) (getUserFromSession ctx)) next ctx
+
+let leaseRequestGetHandler (id: Guid) : HttpHandler =
+    fun next ctx ->
+        match aircraftDatabase |> List.tryFind (fun a -> a.Id = id) with
+        | Some a -> htmlView (leaseRequestView a false (getCartCount ctx) (getUserFromSession ctx)) next ctx
+        | None   -> (setStatusCode 404 >=> text "Aircraft not found") next ctx
+
+let leaseRequestPostHandler (id: Guid) : HttpHandler =
+    fun next ctx ->
+        match aircraftDatabase |> List.tryFind (fun a -> a.Id = id) with
+        | Some a -> htmlView (leaseRequestView a true (getCartCount ctx) (getUserFromSession ctx)) next ctx
+        | None   -> (setStatusCode 404 >=> text "Aircraft not found") next ctx
+
 // ── Cart Handlers ──────────────────────────────────────────────────────────
 let cartViewHandler : HttpHandler =
     fun next ctx ->
@@ -291,6 +308,9 @@ let webApp =
         POST >=> routef "/process-payment/%O"   processPaymentWithIdHandler
         POST >=> route  "/process-payment"  >=> processPaymentHandler
         GET  >=> route  "/track"            >=> trackOrderHandler
+        GET  >=> route  "/lease"            >=> leaseListHandler
+        GET  >=> routef "/lease/request/%O"     (fun id -> requireAuth >=> leaseRequestGetHandler id)
+        POST >=> routef "/lease/request/%O"     (fun id -> requireAuth >=> leaseRequestPostHandler id)
         GET  >=> route  "/cart"             >=> requireAuth >=> cartViewHandler
         POST >=> routef "/cart/add/%O"          (fun id -> requireAuth >=> addToCartHandler id)
         GET  >=> routef "/cart/remove/%s"       (fun id -> requireAuth >=> removeFromCartHandler id)

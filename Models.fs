@@ -181,11 +181,13 @@ let mockOrderDatabase : Map<string, OrderRecord> =
 [<Measure>] type EUR  // Euro
 [<Measure>] type SGD  // Singapore Dollar
 [<Measure>] type GBP  // British Pound Sterling
+[<Measure>] type LAK  // Lao Kip (Laos national currency)
 
 // Reference exchange rates from USD (2026)
 let usdToEurRate = 0.92m
 let usdToSgdRate = 1.35m
 let usdToGbpRate = 0.79m
+let usdToLakRate = 20900m  // 1 USD = ~20,900 LAK (Lao Kip, 2026)
 
 // Lambda Calculus: A CURRIED Higher-Order Function for currency conversion.
 // convertFromUsd : decimal -> decimal<USD> -> decimal
@@ -197,6 +199,7 @@ let convertFromUsd = fun rate -> fun (price: decimal<USD>) -> (price / 1m<USD>) 
 let toEur = convertFromUsd usdToEurRate  // decimal<USD> -> decimal (EUR amount)
 let toSgd = convertFromUsd usdToSgdRate  // decimal<USD> -> decimal (SGD amount)
 let toGbp = convertFromUsd usdToGbpRate  // decimal<USD> -> decimal (GBP amount)
+let toLak = convertFromUsd usdToLakRate  // decimal<USD> -> decimal (LAK amount)
 
 // ==========================================
 // SHOPPING CART
@@ -306,3 +309,96 @@ module Database =
         match findByUsername username with
         | Some u when u.PasswordHash = hashPassword password -> Some u
         | _ -> None
+
+// ==========================================
+// AIRCRAFT LEASING MODULE
+// ==========================================
+// On-demand leasing for SEA airlines that need aircraft temporarily.
+// Unlike Ryanair (rigid low-cost ownership), Laos airlines lease
+// aircraft for seasonal demand and CANCEL when not needed.
+
+// Discriminated Union: The full lifecycle of a lease request.
+// The compiler enforces that EVERY match handles ALL 6 cases.
+type LeaseStatus =
+    | Enquiry           // Officer browsed and expressed interest
+    | OfferSubmitted    // Formal lease request sent to lessor
+    | NegotiationOpen   // Lessor responded, terms being discussed
+    | ContractSigned    // Legally binding lease agreement executed
+    | AircraftOnGround  // Aircraft delivered to the lessee's airport
+    | Cancelled         // Request cancelled — flexible, no Ryanair penalty
+
+// Discriminated Union: Lease duration categories with embedded data.
+// Each case carries the number of months — different pricing applies.
+type LeaseDuration =
+    | ShortTerm  of int  // 1-3 months (seasonal peak: tourism, events)
+    | MediumTerm of int  // 4-12 months (annual capacity planning)
+    | LongTerm   of int  // 13-36 months (fleet expansion)
+
+// Lambda Calculus: Curried HOF for calculating monthly lease rate from base price.
+// leaseMonthlyRate : LeaseDuration -> decimal<USD> -> decimal<USD>
+let leaseMonthlyRate = fun (dur: LeaseDuration) -> fun (price: decimal<USD>) ->
+    let baseRate = price * 0.007m  // ~0.7% of list price per month (industry standard)
+    match dur with
+    | ShortTerm  _ -> baseRate * 1.30m  // +30% premium for short commitments
+    | MediumTerm _ -> baseRate * 1.00m  // Standard rate
+    | LongTerm   _ -> baseRate * 0.80m  // -20% discount for long-term loyalty
+
+// Partial Application: bake in duration types to create ready-to-use rate calculators.
+let shortTermLease  = leaseMonthlyRate (ShortTerm 3)
+let mediumTermLease = leaseMonthlyRate (MediumTerm 6)
+let longTermLease   = leaseMonthlyRate (LongTerm 24)
+
+// A lease request record — submitted by a desk officer at an airline
+type LeaseRequest = {
+    LeaseId       : Guid
+    AircraftId    : Guid
+    AircraftModel : string
+    Manufacturer  : string
+    AirlineName   : string
+    ContactName   : string
+    ContactEmail  : string
+    Country       : string
+    Airport       : string
+    RoutePlan     : string
+    Duration      : LeaseDuration
+    MonthlyRate   : decimal<USD>
+    Status        : LeaseStatus
+    RequestDate   : string
+    Cancellable   : bool          // True = flexible cancel, False = committed
+}
+
+// Mock lease request database — demo data showing SEA airlines using Skypay
+let mockLeaseRequests : LeaseRequest list =
+    let a320 = aircraftDatabase |> List.find (fun a -> a.Model = "A320")
+    let atr72 = aircraftDatabase |> List.find (fun a -> a.Model = "A220-100")
+    let e170  = aircraftDatabase |> List.find (fun a -> a.Model = "E170")
+    let crj   = aircraftDatabase |> List.find (fun a -> a.Model = "CRJ900")
+    [
+        { LeaseId = Guid.NewGuid(); AircraftId = a320.Id; AircraftModel = "A320"; Manufacturer = "Airbus"
+          AirlineName = "Lao Airlines"; ContactName = "Bounthong Phommavong"
+          ContactEmail = "ops@laoairlines.la"; Country = "Laos"; Airport = "Wattay International (VTE)"
+          RoutePlan = "VTE-BKK, VTE-HAN, VTE-SGN seasonal peak routes"
+          Duration = ShortTerm 3; MonthlyRate = shortTermLease a320.Price
+          Status = AircraftOnGround; RequestDate = "March 10, 2026"; Cancellable = true }
+
+        { LeaseId = Guid.NewGuid(); AircraftId = atr72.Id; AircraftModel = "A220-100"; Manufacturer = "Airbus"
+          AirlineName = "Cambodia Angkor Air"; ContactName = "Sokha Khlot"
+          ContactEmail = "fleet@angkorair.com"; Country = "Cambodia"; Airport = "Phnom Penh Intl (PNH)"
+          RoutePlan = "PNH-REP domestic + PNH-BKK regional"
+          Duration = MediumTerm 8; MonthlyRate = mediumTermLease atr72.Price
+          Status = ContractSigned; RequestDate = "April 2, 2026"; Cancellable = true }
+
+        { LeaseId = Guid.NewGuid(); AircraftId = e170.Id; AircraftModel = "E170"; Manufacturer = "Embraer"
+          AirlineName = "Myanmar National Airlines"; ContactName = "Kyaw Zin Hlaing"
+          ContactEmail = "procurement@mna.com.mm"; Country = "Myanmar"; Airport = "Yangon Intl (RGN)"
+          RoutePlan = "RGN-MDL domestic trunk route expansion"
+          Duration = LongTerm 18; MonthlyRate = longTermLease e170.Price
+          Status = NegotiationOpen; RequestDate = "April 28, 2026"; Cancellable = false }
+
+        { LeaseId = Guid.NewGuid(); AircraftId = crj.Id; AircraftModel = "CRJ900"; Manufacturer = "Bombardier"
+          AirlineName = "Lao Skyway"; ContactName = "Khamla Vongsa"
+          ContactEmail = "ops@laoskyway.la"; Country = "Laos"; Airport = "Luang Prabang Intl (LPQ)"
+          RoutePlan = "LPQ-VTE, LPQ-CNX — tourism season coverage"
+          Duration = ShortTerm 2; MonthlyRate = shortTermLease crj.Price
+          Status = Cancelled; RequestDate = "February 15, 2026"; Cancellable = true }
+    ]
