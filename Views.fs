@@ -41,9 +41,14 @@ h1, h2, h3 { font-weight: 700; letter-spacing: -0.02em; margin-top: 0; color: va
 .nav-user { color: var(--gold); font-weight: 600; font-size: 0.875rem; padding: 6px 14px; border: 1px solid var(--gold); border-radius: 20px; }
 .nav-badge { background: var(--gold); color: var(--navy); font-size: 0.7rem; font-weight: 700; border-radius: 10px; padding: 1px 7px; margin-left: 5px; }
 .container { max-width: 1200px; margin: 0 auto; padding: 32px 24px; flex: 1; }
-.header { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%); color: white; padding: 48px 40px; border-radius: var(--radius-lg); margin-bottom: 40px; }
-.header h1 { font-size: 2.25rem; font-weight: 800; color: white; margin-bottom: 8px; letter-spacing: -0.03em; }
-.header p { color: rgba(255,255,255,0.68); margin: 0; font-size: 1rem; }
+.header { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%); color: white; padding: 64px 48px; border-radius: var(--radius-lg); margin-bottom: 40px; position: relative; overflow: hidden; }
+.header::before { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+.header h1 { font-size: 2.5rem; font-weight: 800; color: white; margin-bottom: 10px; letter-spacing: -0.03em; position: relative; }
+.header p { color: rgba(255,255,255,0.72); margin: 0; font-size: 1rem; position: relative; }
+.header-eyebrow { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); margin: 0 0 14px; position: relative; }
+.header-stats { display: flex; gap: 40px; flex-wrap: wrap; margin-top: 32px; position: relative; }
+.header-stat .hs-val { font-size: 1.5rem; font-weight: 800; color: var(--gold); line-height: 1; }
+.header-stat .hs-label { font-size: 0.7rem; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 3px; }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
 .card { background: var(--card); border-radius: var(--radius-lg); box-shadow: var(--shadow); overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; border: 1px solid var(--border); }
 .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
@@ -139,6 +144,24 @@ input:focus, select:focus { outline: none; border-color: var(--navy) !important;
 .lar-body { flex: 1; }
 .lar-airline { font-weight: 700; font-size: 0.95rem; color: var(--navy); margin: 0 0 2px; }
 .lar-detail { font-size: 0.8rem; color: var(--muted); margin: 0; }
+/* ── SCROLL ANIMATIONS ───────────────────────────────────── */
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: translateY(0); } }
+.anim { opacity: 0; }
+.anim.visible { animation: fadeInUp 0.55s ease forwards; }
+/* ── FOOTER COLUMNS ──────────────────────────────────────── */
+.footer-inner { max-width: 1200px; margin: 0 auto; }
+.footer-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin-bottom: 28px; text-align: left; }
+.footer-col h4 { color: white; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin: 0 0 12px; }
+.footer-col p { color: rgba(255,255,255,0.48); font-size: 0.82rem; margin: 5px 0; }
+.footer-col a { color: rgba(255,255,255,0.55); font-size: 0.82rem; margin: 5px 0; display: block; text-decoration: none; transition: color 0.15s; }
+.footer-col a:hover { color: var(--gold); }
+.footer-divider { border: none; border-top: 1px solid rgba(255,255,255,0.10); margin: 0 0 20px; }
+/* ── TRACK HOW-IT-WORKS ──────────────────────────────────── */
+.hiw-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px; }
+.hiw-step { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; text-align: center; box-shadow: var(--shadow); }
+.hiw-num { width: 42px; height: 42px; border-radius: 50%; background: var(--navy); color: var(--gold); font-weight: 800; font-size: 1rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; }
+.hiw-title { font-weight: 700; font-size: 0.9rem; color: var(--navy); margin: 0 0 6px; }
+.hiw-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.55; margin: 0; }
 """
 
 let layout (title: string) (cartCount: int) (username: string option) (content: XmlNode list) =
@@ -146,8 +169,9 @@ let layout (title: string) (cartCount: int) (username: string option) (content: 
         head [] [
             meta [ _charset "UTF-8" ]
             meta [ _name "viewport"; _content "width=device-width, initial-scale=1.0" ]
+            meta [ _name "description"; _content "Skypay — B2B aircraft sales and leasing marketplace for Southeast Asian operators. Buy or lease commercial aircraft with real-time USD and LAK pricing." ]
             tag "title" [] [ str title ]
-            link [ _rel "stylesheet"; _href "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" ]
+            link [ _rel "stylesheet"; _href "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" ]
             script [ _src "https://cdn.jsdelivr.net/npm/chart.js" ] []
             style [] [ str css ]
         ]
@@ -162,7 +186,7 @@ let layout (title: string) (cartCount: int) (username: string option) (content: 
                         a [ _href "/cart"; _style "position:relative;" ] [
                             str "Cart"
                             if cartCount > 0 then
-                                span [ _style "position:absolute;top:-8px;right:-10px;background:#f472b6;color:black;border:2px solid black;border-radius:50%;width:20px;height:20px;font-size:0.7rem;font-weight:900;display:flex;align-items:center;justify-content:center;box-shadow:1px 1px 0px black;" ] [ str (string cartCount) ]
+                                span [ _style "position:absolute;top:-8px;right:-10px;background:var(--gold);color:var(--navy);border-radius:50%;width:20px;height:20px;font-size:0.7rem;font-weight:900;display:flex;align-items:center;justify-content:center;" ] [ str (string cartCount) ]
                         ]
                         match username with
                         | Some name ->
@@ -175,11 +199,35 @@ let layout (title: string) (cartCount: int) (username: string option) (content: 
                 ]
                 div [ _class "container" ] content
                 footer [ _class "footer" ] [
-                    p [] [ str "© 2026 Skypay Aircraft Shop. All flights reserved." ]
-                    div [ _class "footer-links" ] [
-                        a [ _href "#" ] [ str "About Us" ]
-                        a [ _href "#" ] [ str "Support" ]
-                        a [ _href "#" ] [ str "Terms of Service" ]
+                    div [ _class "footer-inner" ] [
+                        div [ _class "footer-cols" ] [
+                            div [ _class "footer-col" ] [
+                                h4 [] [ str "Skypay" ]
+                                p [] [ str "B2B aircraft marketplace for" ]
+                                p [] [ str "Southeast Asian operators." ]
+                                p [] [ str "Est. 2026 · Vientiane, Laos" ]
+                            ]
+                            div [ _class "footer-col" ] [
+                                h4 [] [ str "Services" ]
+                                a [ _href "/" ] [ str "Browse Aircraft" ]
+                                a [ _href "/lease" ] [ str "Lease Aircraft" ]
+                                a [ _href "/track" ] [ str "Track Order" ]
+                                a [ _href "/cart" ] [ str "Shopping Cart" ]
+                            ]
+                            div [ _class "footer-col" ] [
+                                h4 [] [ str "Markets" ]
+                                p [] [ str "Laos · Thailand · Vietnam" ]
+                                p [] [ str "Cambodia · Myanmar" ]
+                                p [] [ str "USD / LAK dual currency" ]
+                            ]
+                        ]
+                        hr [ _class "footer-divider" ]
+                        p [] [ str "© 2026 Skypay Aircraft Shop. All flights reserved." ]
+                        div [ _class "footer-links" ] [
+                            a [ _href "#" ] [ str "About Us" ]
+                            a [ _href "#" ] [ str "Support" ]
+                            a [ _href "#" ] [ str "Terms of Service" ]
+                        ]
                     ]
                 ]
             ]
@@ -273,10 +321,31 @@ let dashboardView (aircrafts: Aircraft list) (topStats: Aircraft list) (searchQu
             "});"
         ]
 
-    layout "Skypay" cartCount username [
+    layout "Skypay — Aircraft Marketplace" cartCount username [
         div [ _class "header" ] [
-            h1 [] [ str "Aircraft Shop" ]
-            p [] [ str "Browse our available inventory." ]
+            div [ _style "position:relative;z-index:1;" ] [
+                p [ _class "header-eyebrow" ] [ str "B2B Aviation Marketplace" ]
+                h1 [] [ str "Global Aircraft Shop" ]
+                p [] [ str (sprintf "%d commercial aircraft available — B2B sales & leasing for Southeast Asian operators — Real-time USD & LAK pricing" aircrafts.Length) ]
+                div [ _class "header-stats" ] [
+                    div [ _class "header-stat" ] [
+                        div [ _class "hs-val" ] [ str (string aircrafts.Length) ]
+                        div [ _class "hs-label" ] [ str "Aircraft Listed" ]
+                    ]
+                    div [ _class "header-stat" ] [
+                        div [ _class "hs-val" ] [ str "5" ]
+                        div [ _class "hs-label" ] [ str "Manufacturers" ]
+                    ]
+                    div [ _class "header-stat" ] [
+                        div [ _class "hs-val" ] [ str "$250B+" ]
+                        div [ _class "hs-label" ] [ str "Market Value" ]
+                    ]
+                    div [ _class "header-stat" ] [
+                        div [ _class "hs-val" ] [ str "LAK" ]
+                        div [ _class "hs-label" ] [ str "Local Currency" ]
+                    ]
+                ]
+            ]
         ]
 
         // Search & Filter Section
@@ -329,7 +398,10 @@ let dashboardView (aircrafts: Aircraft list) (topStats: Aircraft list) (searchQu
             ]
         ]
 
-        div [] [ h2 [] [ str "Available Aircraft" ] ]
+        div [ _style "display:flex;align-items:center;gap:14px;margin-bottom:4px;" ] [
+            h2 [ _style "margin:0;" ] [ str (sprintf "Available Aircraft") ]
+            span [ _style "background:var(--navy);color:var(--gold);font-size:0.75rem;font-weight:700;padding:4px 12px;border-radius:20px;" ] [ str (sprintf "%d models" aircrafts.Length) ]
+        ]
 
         if aircrafts.Length = 0 then
             div [ _class "empty-state" ] [
@@ -353,7 +425,7 @@ let dashboardView (aircrafts: Aircraft list) (topStats: Aircraft list) (searchQu
                     let priceText = sprintf "$%s USD" ((item.Price / 1m<USD>).ToString("N0"))
                     let linkUrl = sprintf "/checkout/%s" (item.Id.ToString())
 
-                    div [ _class "card" ] [
+                    div [ _class "card anim" ] [
                         // Placeholder image div
                         div [ _class "card-img-placeholder"; _style bgStyle ] []
                         div [ _class "card-content" ] [
@@ -375,6 +447,18 @@ let dashboardView (aircrafts: Aircraft list) (topStats: Aircraft list) (searchQu
             )
 
         script [] [ rawText chartScript ]
+        script [] [ rawText """
+            const animEls = document.querySelectorAll('.anim');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((e, i) => {
+                    if (e.isIntersecting) {
+                        setTimeout(() => e.target.classList.add('visible'), i * 80);
+                        observer.unobserve(e.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            animEls.forEach(el => observer.observe(el));
+        """ ]
     ]
 
 let paymentView (aircraft: Aircraft) (cartCount: int) (username: string option) =
@@ -674,6 +758,27 @@ let orderTrackView (query: string) (result: OrderRecord option) (cartCount: int)
 
     layout "Track Your Order | Skypay" cartCount username [
         div [ _class "track-container" ] (topSection @ resultSection)
+        div [ _style "margin-top:48px;" ] [
+            h2 [ _style "text-align:center;margin-bottom:8px;" ] [ str "How Aircraft Delivery Works" ]
+            p [ _style "text-align:center;color:var(--muted);margin:0 0 28px;font-size:0.9rem;" ] [ str "From order confirmation to your runway — here's what to expect." ]
+            div [ _class "hiw-grid" ] [
+                div [ _class "hiw-step" ] [
+                    div [ _class "hiw-num" ] [ str "1" ]
+                    p [ _class "hiw-title" ] [ str "Order Confirmed" ]
+                    p [ _class "hiw-desc" ] [ str "Your payment is verified and a dedicated logistics coordinator is assigned within 24 hours." ]
+                ]
+                div [ _class "hiw-step" ] [
+                    div [ _class "hiw-num" ] [ str "2" ]
+                    p [ _class "hiw-title" ] [ str "Production & Inspection" ]
+                    p [ _class "hiw-desc" ] [ str "The aircraft undergoes final assembly checks, cabin configuration, and ICAO airworthiness certification." ]
+                ]
+                div [ _class "hiw-step" ] [
+                    div [ _class "hiw-num" ] [ str "3" ]
+                    p [ _class "hiw-title" ] [ str "Delivered to Your Airport" ]
+                    p [ _class "hiw-desc" ] [ str "Your aircraft is flown by a delivery crew directly to the ICAO airport code you specified at checkout." ]
+                ]
+            ]
+        ]
     ]
 
 // ==========================================
