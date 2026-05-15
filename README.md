@@ -28,7 +28,7 @@ Skypay delivers a polished, responsive, and professional B2B user experience tha
 
 ---
 
-## 📚 Course Material Integration (Grade 5 Demonstration)
+##  Course Material Integration 
 
 This project heavily utilizes the core concepts taught throughout the "Introduction to Functional Programming in F#" course. Below is a direct mapping of the lecture materials to the codebase:
 
