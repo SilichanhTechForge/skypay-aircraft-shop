@@ -162,6 +162,61 @@ input:focus, select:focus { outline: none; border-color: var(--navy) !important;
 .hiw-num { width: 42px; height: 42px; border-radius: 50%; background: var(--navy); color: var(--gold); font-weight: 800; font-size: 1rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; }
 .hiw-title { font-weight: 700; font-size: 0.9rem; color: var(--navy); margin: 0 0 6px; }
 .hiw-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.55; margin: 0; }
+/* ── HAMBURGER / MOBILE NAV ──────────────────────────────── */
+.hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
+.hamburger span { display: block; width: 24px; height: 2px; background: white; border-radius: 2px; transition: all 0.25s; }
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+/* ── CONTACT PAGE ────────────────────────────────────────── */
+.contact-hero { background: linear-gradient(135deg, var(--navy) 0%, #1a3a6e 100%); color: white; padding: 56px 48px; border-radius: var(--radius-lg); margin-bottom: 40px; text-align: center; }
+.contact-hero h1 { color: white; font-size: 2.4rem; margin-bottom: 10px; }
+.contact-hero p { color: rgba(255,255,255,0.75); font-size: 1.05rem; margin: 0; }
+.contact-grid { display: grid; grid-template-columns: 1fr 1.6fr; gap: 32px; align-items: start; }
+.contact-info-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px; box-shadow: var(--shadow); }
+.contact-info-item { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 22px; }
+.contact-info-item:last-child { margin-bottom: 0; }
+.ci-icon { width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, var(--navy), #1a3a6e); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.1rem; }
+.ci-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin: 0 0 3px; }
+.ci-value { font-size: 0.9rem; font-weight: 600; color: var(--navy); margin: 0; }
+.contact-form-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px; box-shadow: var(--shadow); }
+.contact-success { text-align: center; padding: 48px 24px; }
+.contact-success-icon { width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, #dcfce7, #bbf7d0); border: 3px solid #16a34a; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 2rem; }
+textarea.form-input { resize: vertical; min-height: 120px; line-height: 1.6; }
+/* ── RESPONSIVE MEDIA QUERIES ────────────────────────────── */
+@media (max-width: 768px) {
+  .hamburger { display: flex; }
+  .nav-links { display: none; flex-direction: column; position: absolute; top: 64px; left: 0; right: 0; background: var(--navy); padding: 16px 20px 20px; gap: 2px; box-shadow: 0 8px 24px rgba(0,0,0,0.3); z-index: 999; }
+  .nav-links.open { display: flex; }
+  .nav-links a { padding: 11px 14px; border-radius: 8px; width: 100%; font-size: 0.95rem; }
+  .navbar { padding: 0 20px; position: relative; }
+  .container { padding: 20px 16px; }
+  .header { padding: 36px 24px; }
+  .header h1 { font-size: 1.7rem; }
+  .header-stats { gap: 20px; }
+  .grid { grid-template-columns: 1fr; }
+  .payment-container { margin: 20px 12px; padding: 24px 18px; }
+  .track-container { margin: 20px 12px; padding: 24px 18px; }
+  .lease-form-container { margin: 0 8px; }
+  .lease-hero { padding: 36px 20px; }
+  .lease-hero h1 { font-size: 1.8rem; }
+  .lease-stats { gap: 16px; }
+  .lease-aircraft-summary { flex-direction: column; padding: 20px; gap: 16px; }
+  .footer-cols { grid-template-columns: 1fr; gap: 20px; }
+  .hiw-grid { grid-template-columns: 1fr; }
+  .order-info-grid { grid-template-columns: 1fr; }
+  .order-info-cell[style*='span 2'] { grid-column: span 1 !important; }
+  .pipeline { flex-direction: column; gap: 12px; align-items: flex-start; }
+  .pipeline::before { display: none; }
+  .pipeline-step { flex-direction: row; gap: 12px; }
+  .contact-grid { grid-template-columns: 1fr; }
+  .contact-hero { padding: 36px 20px; }
+  .contact-hero h1 { font-size: 1.8rem; }
+  div[style*='grid-template-columns: 1fr 1fr'] { display: block !important; }
+  div[style*='grid-template-columns:1fr 1fr'] { display: block !important; }
+  div[style*='display: grid'] { gap: 0 !important; }
+  .lease-hero .lease-stats { flex-wrap: wrap; }
+}
 """
 
 let layout (title: string) (cartCount: int) (username: string option) (content: XmlNode list) =
@@ -179,10 +234,14 @@ let layout (title: string) (cartCount: int) (username: string option) (content: 
             [
                 nav [ _class "navbar" ] [
                     a [ _href "/"; _class "nav-brand" ] [ str "SKYPAY" ]
-                    div [ _class "nav-links" ] [
+                    button [ _class "hamburger"; _id "hamburger"; attr "aria-label" "Toggle menu"; attr "onclick" "document.getElementById('nav-links').classList.toggle('open');this.classList.toggle('open');" ] [
+                        span [] []; span [] []; span [] []
+                    ]
+                    div [ _class "nav-links"; _id "nav-links" ] [
                         a [ _href "/" ] [ str "Home" ]
                         a [ _href "/lease"; _style "color:var(--gold);font-weight:600;" ] [ str "Lease Aircraft" ]
                         a [ _href "/track" ] [ str "Track Order" ]
+                        a [ _href "/contact" ] [ str "Contact Agency" ]
                         a [ _href "/cart"; _style "position:relative;" ] [
                             str "Cart"
                             if cartCount > 0 then
@@ -212,6 +271,7 @@ let layout (title: string) (cartCount: int) (username: string option) (content: 
                                 a [ _href "/" ] [ str "Browse Aircraft" ]
                                 a [ _href "/lease" ] [ str "Lease Aircraft" ]
                                 a [ _href "/track" ] [ str "Track Order" ]
+                                a [ _href "/contact" ] [ str "Contact Agency" ]
                                 a [ _href "/cart" ] [ str "Shopping Cart" ]
                             ]
                             div [ _class "footer-col" ] [
