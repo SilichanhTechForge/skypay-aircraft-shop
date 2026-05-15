@@ -1,8 +1,21 @@
-# ✈️ Skypay — Aircraft Sales Portal
+# ✈️ Skypay — Aircraft Sales & Leasing Portal
 
-A full-stack **F# web application** for browsing, searching, and purchasing commercial aircraft. Built using functional programming principles including **Lambda Calculus**, **Units of Measure**, and **Higher-Order Functions**.
+A full-stack **F# web application** for browsing, searching, purchasing, and leasing commercial aircraft. Built using functional programming principles including **Lambda Calculus**, **Units of Measure**, and **Higher-Order Functions**.
 
-> 🔗 Live: (https://skypay-aircraft-shop.onrender.com)
+> 🔗 **Live Demo:** [https://skypay-aircraft-shop.onrender.com](https://skypay-aircraft-shop.onrender.com)
+
+---
+
+## 🎯 Project Motivation & Real-World Problem (Grade 5 Criteria)
+
+**The Problem:** Airlines in Southeast Asia (Laos, Cambodia, Myanmar) face highly seasonal travel demand. However, traditional Western aircraft manufacturers (like Boeing or Airbus) and major lessors force airlines into rigid, multi-year ownership or leasing contracts with heavy cancellation penalties. Furthermore, pricing is exclusively in USD, which exposes local operators to severe currency fluctuation risks (e.g., Lao Kip vs. USD).
+
+**The Skypay Solution:** Skypay is a specialized B2B marketplace built explicitly for the Southeast Asian market. It solves this problem by offering:
+1. **On-Demand Flexible Leasing:** Airlines can request short-term leases (e.g., just for the Nov-Apr tourism peak) with zero cancellation penalties before contract signing.
+2. **Dual-Currency Type Safety:** Pricing is natively tracked in USD and converted to local currencies (LAK, SGD, etc.) in real-time. By utilizing **F# Units of Measure**, the backend mathematically guarantees that USD and LAK values are never erroneously mixed, ensuring flawless financial calculations.
+
+Skypay delivers a polished, responsive, and professional B2B user experience that bridges the gap between massive aerospace manufacturers and regional airlines.
+
 ---
 
 ## 🖼 Screenshots
