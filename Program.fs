@@ -24,8 +24,8 @@ let vipDiscount   = applyDiscount 0.20m
 let staffDiscount = applyDiscount 0.50m
 let getDiscountFn = fun (code: string) ->
     match code.Trim().ToUpper() with
-    | "VIP20"   -> Some (vipDiscount,   "VIP20 — 20% Off Applied! ✈️")
-    | "STAFF50" -> Some (staffDiscount, "STAFF50 — 50% Off Applied! 🎉")
+    | "VIP20"   -> Some (vipDiscount,   "VIP20 — 20% Off Applied!")
+    | "STAFF50" -> Some (staffDiscount, "STAFF50 — 50% Off Applied!")
     | _         -> None
 
 // ── Cart Session Helpers ───────────────────────────────────────────────────
@@ -74,10 +74,10 @@ let sendConfirmationEmail (toEmail: string) (username: string) (aircraft: Aircra
                 let html =
                     "<div style='font-family:Arial,sans-serif;max-width:600px;margin:0 auto;border:3px solid black;border-radius:12px;overflow:hidden;'>" +
                     "<div style='background:#fbbf24;padding:28px;text-align:center;'>" +
-                    "<h1 style='margin:0;font-size:2rem;font-weight:900;'>✈️ SKYPAY</h1>" +
+                    "<h1 style='margin:0;font-size:2rem;font-weight:900;'>SKYPAY</h1>" +
                     "<p style='margin:4px 0 0;font-weight:bold;'>Aircraft Sales Portal</p></div>" +
                     "<div style='background:white;padding:30px;'>" +
-                    "<h2 style='margin-top:0;'>🎉 Order Confirmed, " + username + "!</h2>" +
+                    "<h2 style='margin-top:0;'>Order Confirmed, " + username + "!</h2>" +
                     "<p>Thank you for your purchase. Here are your order details:</p>" +
                     "<table style='width:100%;border-collapse:collapse;margin:20px 0;border:2px solid black;'>" +
                     "<tr style='background:#f8fafc;'><td style='padding:10px;font-weight:bold;'>Aircraft</td><td style='padding:10px;'>" + aircraft.Model + "</td></tr>" +
@@ -86,7 +86,7 @@ let sendConfirmationEmail (toEmail: string) (username: string) (aircraft: Aircra
                     discountRow + "</table>" +
                     "<p>We will contact you shortly about delivery arrangements.</p>" +
                     "<p style='text-align:center;margin-top:24px;'>" +
-                    "<a href='https://skypay-aircraft-shop.onrender.com/track' style='background:#fbbf24;color:black;padding:12px 28px;text-decoration:none;font-weight:900;border-radius:8px;border:2px solid black;'>📦 Track Your Order</a></p></div>" +
+                    "<a href='https://skypay-aircraft-shop.onrender.com/track' style='background:#fbbf24;color:black;padding:12px 28px;text-decoration:none;font-weight:900;border-radius:8px;border:2px solid black;'>Track Your Order</a></p></div>" +
                     "<div style='background:#1e293b;color:white;padding:18px;text-align:center;'>" +
                     "<p style='margin:0;font-size:0.85rem;'>© 2026 Skypay Aircraft Shop</p></div></div>"
                 let builder = new BodyBuilder()

@@ -1,10 +1,10 @@
-# ✈️ Skypay — Aircraft Sales & Leasing Portal
+# Skypay — Aircraft Sales & Leasing Portal
 
 A full-stack **F# web application** for browsing, searching, purchasing, and leasing commercial aircraft. Built using functional programming principles including **Lambda Calculus**, **Units of Measure**, and **Higher-Order Functions**.
 
 **Created by: Silichanh SIPHANH**
 
-> 🔗 **Live Demo:** [https://skypay-aircraft-shop.onrender.com](https://skypay-aircraft-shop.onrender.com)
+> **Live Demo:** [https://skypay-aircraft-shop.onrender.com](https://skypay-aircraft-shop.onrender.com)
 
 ---
 
@@ -20,7 +20,7 @@ Skypay delivers a polished, responsive, and professional B2B user experience tha
 
 ---
 
-## 🖼 Screenshots
+## Screenshots
 
 <img width="1214" height="867" alt="Dashboard" src="https://github.com/user-attachments/assets/9c1a0960-8032-4f73-b706-c40e21811b59" />
 
@@ -55,7 +55,7 @@ F# `List` module functions and pipelines (`|>`) are used extensively for data ma
 
 ---
 
-## 🏗 Architecture — MVC Pattern
+## Architecture — MVC Pattern
 
 The project is organized using the **Model-View-Controller (MVC)** pattern:
 
@@ -67,7 +67,7 @@ The project is organized using the **Model-View-Controller (MVC)** pattern:
 
 ---
 
-## 📐 F# Feature 1: Units of Measure
+## F# Feature 1: Units of Measure
 
 **Units of Measure** is a unique F# compiler feature that attaches a physical unit to a number. The compiler will **reject any code that mixes up different units** — completely at compile time, with zero runtime cost.
 
@@ -95,7 +95,7 @@ createAircraft "A320" "Airbus" 101000000m<USD> "Standard single-aisle." 150
 
 ---
 
-## λ F# Feature 2: Lambda Calculus & Functional Programming
+## F# Feature 2: Lambda Calculus & Functional Programming
 
 ### Lambda Abstraction (`fun x ->`)
 Every `fun` keyword is a lambda expression — the building block of all functional programming.
@@ -149,7 +149,7 @@ aircraftDatabase
 
 ---
 
-## 🎟️ Feature: Live Promo Code Validator
+## Feature: Live Promo Code Validator
 
 The checkout page has a **real-time promo code validator** that shows feedback instantly as you type. The browser-side JavaScript mirrors the exact same lambda calculus structure as the F# server code.
 
@@ -167,7 +167,7 @@ The checkout page has a **real-time promo code validator** that shows feedback i
 
 ---
 
-## 🛠 Libraries Used
+## Libraries Used
 
 | Library | Purpose |
 |---|---|
@@ -178,7 +178,7 @@ The checkout page has a **real-time promo code validator** that shows feedback i
 
 ---
 
-## 🚀 How to Run
+## How to Run
 
 ```bash
 # Clone the repo
@@ -194,7 +194,7 @@ dotnet run
 
 ---
 
-## 🐳 Docker
+## Docker
 
 ```bash
 docker build -t skypay .
@@ -203,7 +203,7 @@ docker run -p 5000:5000 skypay
 
 ---
 
-## 📊 Aircraft Inventory
+## Aircraft Inventory
 
 22 aircraft across 5 manufacturers: **Airbus**, **Boeing**, **COMAC**, **Embraer**, **Bombardier**
 
