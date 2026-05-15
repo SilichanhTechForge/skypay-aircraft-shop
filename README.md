@@ -24,8 +24,6 @@ Skypay delivers a polished, responsive, and professional B2B user experience tha
 
 <img width="1920" height="1030" alt="image" src="https://github.com/user-attachments/assets/332e4934-b091-4850-9d5d-e610360246f0" />
 
-<img width="1920" height="994" alt="image" src="https://github.com/user-attachments/assets/68c4507a-073d-495d-a597-dc3123890808" />
-
 <img width="1920" height="1029" alt="image" src="https://github.com/user-attachments/assets/82f69ef5-d9cf-43da-aff5-66e0c25fb949" />
 <img width="1919" height="991" alt="image" src="https://github.com/user-attachments/assets/de0f45fc-7a25-49b7-bf98-5f2de184096e" />
 <img width="1915" height="993" alt="image" src="https://github.com/user-attachments/assets/210706cd-ded0-43f8-b864-95cc579415ca" />
