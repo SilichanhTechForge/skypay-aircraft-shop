@@ -300,6 +300,15 @@ let logoutHandler : HttpHandler =
         ctx.Session.Clear()
         (redirectTo false "/") next ctx
 
+let contactGetHandler : HttpHandler =
+    fun next ctx -> htmlView (contactView false (getCartCount ctx) (getUserFromSession ctx)) next ctx
+
+let contactPostHandler : HttpHandler =
+    fun next ctx ->
+        // In a real application, you might save this to the DB or send an email.
+        // For now, we'll just show the success screen.
+        htmlView (contactView true (getCartCount ctx) (getUserFromSession ctx)) next ctx
+
 // ── Router ─────────────────────────────────────────────────────────────────
 let webApp =
     choose [
@@ -319,6 +328,8 @@ let webApp =
         POST >=> route  "/login"            >=> loginPostHandler
         GET  >=> route  "/register"         >=> registerGetHandler
         POST >=> route  "/register"         >=> registerPostHandler
+        GET  >=> route  "/contact"          >=> contactGetHandler
+        POST >=> route  "/contact"          >=> contactPostHandler
         GET  >=> route  "/logout"           >=> logoutHandler
     ]
 

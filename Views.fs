@@ -1309,3 +1309,94 @@ let leaseRequestView (aircraft: Aircraft) (submitted: bool) (cartCount: int) (us
                 script [] [ rawText jsScript ]
         ]
     ]
+
+// ==========================================
+// CONTACT AGENCY VIEW
+// ==========================================
+let contactView (submitted: bool) (cartCount: int) (username: string option) =
+    layout "Contact Agency | Skypay" cartCount username [
+        div [ _class "container"; _style "max-width: 1000px;" ] [
+            div [ _class "contact-hero" ] [
+                h1 [] [ str "Contact Skypay Agency" ]
+                p [] [ str "Get in touch with our leasing officers and sales representatives." ]
+            ]
+
+            if submitted then
+                div [ _class "contact-form-card contact-success" ] [
+                    div [ _class "contact-success-icon" ] [ str "✓" ]
+                    h2 [ _style "color: var(--navy); margin-bottom: 12px;" ] [ str "Message Sent Successfully!" ]
+                    p [ _style "color: var(--muted); max-width: 400px; margin: 0 auto 24px;" ] [ str "Thank you for reaching out. One of our aviation specialists will review your inquiry and get back to you within 24 business hours." ]
+                    a [ _href "/"; _class "btn" ] [ str "Return to Homepage" ]
+                ]
+            else
+                div [ _class "contact-grid" ] [
+                    // Left Column - Contact Info
+                    div [ _class "contact-info-card" ] [
+                        h3 [ _style "margin-bottom: 24px; color: var(--navy);" ] [ str "Corporate Headquarters" ]
+                        
+                        div [ _class "contact-info-item" ] [
+                            div [ _class "ci-icon" ] [ str "📍" ]
+                            div [] [
+                                p [ _class "ci-label" ] [ str "Office Address" ]
+                                p [ _class "ci-value" ] [ str "Vientiane Capital" ]
+                                p [ _class "ci-value"; _style "font-size: 0.85rem; color: var(--muted);" ] [ str "Lao PDR" ]
+                            ]
+                        ]
+                        
+                        div [ _class "contact-info-item" ] [
+                            div [ _class "ci-icon" ] [ str "✉️" ]
+                            div [] [
+                                p [ _class "ci-label" ] [ str "Email Us" ]
+                                p [ _class "ci-value" ] [ str "inquiries@skypay.la" ]
+                                p [ _class "ci-value"; _style "font-size: 0.85rem; color: var(--muted);" ] [ str "sales@skypay.la" ]
+                            ]
+                        ]
+                        
+                        div [ _class "contact-info-item" ] [
+                            div [ _class "ci-icon" ] [ str "📞" ]
+                            div [] [
+                                p [ _class "ci-label" ] [ str "Call Us" ]
+                                p [ _class "ci-value" ] [ str "+856 20 5555 1234" ]
+                                p [ _class "ci-value"; _style "font-size: 0.85rem; color: var(--muted);" ] [ str "Mon-Fri, 9:00 AM - 6:00 PM" ]
+                            ]
+                        ]
+                    ]
+
+                    // Right Column - Contact Form
+                    div [ _class "contact-form-card" ] [
+                        h3 [ _style "margin-bottom: 8px; color: var(--navy);" ] [ str "Send us a message" ]
+                        p [ _style "font-size: 0.9rem; color: var(--muted); margin-bottom: 24px;" ] [ str "Have a question about purchasing or leasing? Let us know." ]
+                        
+                        tag "form" [ attr "action" "/contact"; attr "method" "POST" ] [
+                            div [ _style "display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;" ] [
+                                div [ _class "form-group"; _style "margin-bottom: 0;" ] [
+                                    label [ _class "form-label" ] [ str "Your Name" ]
+                                    input [ _type "text"; _name "name"; _class "form-input"; _placeholder "John Doe"; _required ]
+                                ]
+                                div [ _class "form-group"; _style "margin-bottom: 0;" ] [
+                                    label [ _class "form-label" ] [ str "Email Address" ]
+                                    input [ _type "email"; _name "email"; _class "form-input"; _placeholder "john@example.com"; _required ]
+                                ]
+                            ]
+                            
+                            div [ _class "form-group" ] [
+                                label [ _class "form-label" ] [ str "Inquiry Type" ]
+                                select [ _name "inquiryType"; _class "form-input"; _required ] [
+                                    option [ _value "Sales" ] [ str "Aircraft Sales" ]
+                                    option [ _value "Leasing" ] [ str "Aircraft Leasing" ]
+                                    option [ _value "Support" ] [ str "General Support" ]
+                                    option [ _value "Other" ] [ str "Other" ]
+                                ]
+                            ]
+                            
+                            div [ _class "form-group" ] [
+                                label [ _class "form-label" ] [ str "Message" ]
+                                tag "textarea" [ attr "name" "message"; attr "class" "form-input"; attr "placeholder" "How can we help you?"; attr "required" "" ] []
+                            ]
+                            
+                            button [ _type "submit"; _class "btn"; _style "width: 100%; padding: 12px; font-size: 1rem;" ] [ str "Send Message" ]
+                        ]
+                    ]
+                ]
+        ]
+    ]
