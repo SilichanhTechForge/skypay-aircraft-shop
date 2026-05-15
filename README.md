@@ -8,7 +8,7 @@ A full-stack **F# web application** for browsing, searching, purchasing, and lea
 
 ---
 
-## 🎯 Project Motivation & Real-World Problem (Grade 5 Criteria)
+##  Project Motivation & Real-World Problem (Grade 5 Criteria)
 
 **The Problem:** Airlines in Southeast Asia (Laos, Cambodia, Myanmar) face highly seasonal travel demand. However, traditional Western aircraft manufacturers (like Boeing or Airbus) and major lessors force airlines into rigid, multi-year ownership or leasing contracts with heavy cancellation penalties. Furthermore, pricing is exclusively in USD, which exposes local operators to severe currency fluctuation risks (e.g., Lao Kip vs. USD).
 
@@ -22,9 +22,14 @@ Skypay delivers a polished, responsive, and professional B2B user experience tha
 
 ## Screenshots
 
-<img width="1214" height="867" alt="Dashboard" src="https://github.com/user-attachments/assets/9c1a0960-8032-4f73-b706-c40e21811b59" />
+<img width="1920" height="1030" alt="image" src="https://github.com/user-attachments/assets/332e4934-b091-4850-9d5d-e610360246f0" />
 
-<img width="1206" height="916" alt="Checkout" src="https://github.com/user-attachments/assets/46ceb207-66e7-4ff7-946d-e82c4e53ab7d" />
+<img width="1920" height="994" alt="image" src="https://github.com/user-attachments/assets/68c4507a-073d-495d-a597-dc3123890808" />
+
+<img width="1920" height="1029" alt="image" src="https://github.com/user-attachments/assets/82f69ef5-d9cf-43da-aff5-66e0c25fb949" />
+<img width="1919" height="991" alt="image" src="https://github.com/user-attachments/assets/de0f45fc-7a25-49b7-bf98-5f2de184096e" />
+<img width="1915" height="993" alt="image" src="https://github.com/user-attachments/assets/210706cd-ded0-43f8-b864-95cc579415ca" />
+<img width="1920" height="1017" alt="image" src="https://github.com/user-attachments/assets/83faeef6-80c6-4329-9883-5ea047426bcf" />
 
 ---
 
