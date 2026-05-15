@@ -282,7 +282,7 @@ let layout (title: string) (cartCount: int) (username: string option) (content: 
                             ]
                         ]
                         hr [ _class "footer-divider" ]
-                        p [] [ str "© 2026 Skypay Aircraft Shop. All flights reserved." ]
+                        p [] [ str "© 2026 Skypay Aircraft Shop. All flights reserved. Created by Silichanh SIPHANH." ]
                         div [ _class "footer-links" ] [
                             a [ _href "#" ] [ str "About Us" ]
                             a [ _href "#" ] [ str "Support" ]

@@ -2,6 +2,8 @@
 
 A full-stack **F# web application** for browsing, searching, purchasing, and leasing commercial aircraft. Built using functional programming principles including **Lambda Calculus**, **Units of Measure**, and **Higher-Order Functions**.
 
+**Created by: Silichanh SIPHANH**
+
 > 🔗 **Live Demo:** [https://skypay-aircraft-shop.onrender.com](https://skypay-aircraft-shop.onrender.com)
 
 ---
